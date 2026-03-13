@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLingoContext } from '@lingo.dev/compiler/react';
 import Navbar from './components/Navbar';
 import HomeScreen from './components/HomeScreen';
 import Viewer from './components/Viewer';
@@ -6,15 +7,19 @@ import ConvertFlow from './components/ConvertFlow';
 import SettingsPanel from './components/SettingsPanel';
 import type { AppScreen, OpenFileState } from './types/pgs';
 
+const uiLocales = ['en', 'fr', 'es', 'de', 'hi', 'ar', 'ja', 'zh', 'pt', 'it'] as const;
+type UiLocale = (typeof uiLocales)[number];
+
 function baseName(filePath: string): string {
   const chunks = filePath.split(/[\\/]/);
   return chunks[chunks.length - 1];
 }
 
 function App() {
+  const { setLocale } = useLingoContext();
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('home');
   const [openFile, setOpenFile] = useState<OpenFileState | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('original');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [selectedLanguageByPgsPath, setSelectedLanguageByPgsPath] = useState<Record<string, string>>({});
   const [isDark, setIsDark] = useState(true);
   const [apiKey, setApiKey] = useState('');
@@ -48,6 +53,19 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
+
+  useEffect(() => {
+    const fallbackLocale: UiLocale = 'en';
+    const candidateLocale = selectedLanguage === 'original' ? fallbackLocale : selectedLanguage;
+    const uiLocale = (uiLocales as readonly string[]).includes(candidateLocale)
+      ? (candidateLocale as UiLocale)
+      : fallbackLocale;
+
+    setLocale(uiLocale);
+    document.documentElement.lang = uiLocale;
+    document.documentElement.dir = 'ltr';
+    document.documentElement.setAttribute('data-ui-locale', uiLocale);
+  }, [selectedLanguage, setLocale]);
 
   const openFromPath = async (filePath: string) => {
     if (!window.electronAPI) {
@@ -83,7 +101,6 @@ function App() {
       fileName: baseName(filePath),
       extractedContent: extracted,
     });
-    setSelectedLanguage('original');
     setCurrentScreen('viewer');
   };
 

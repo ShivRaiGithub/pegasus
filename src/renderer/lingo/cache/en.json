@@ -1,0 +1,27 @@
+{
+  "version": 0.1,
+  "locale": "en",
+  "entries": {
+    "734cdc15fbf0": "Toggle theme",
+    "df9518920f1e": "Toggle theme",
+    "f53e770487b5": "Go home",
+    "dd1cb5c41552": "Pegasus",
+    "693177c8db3f": "Open settings",
+    "7e76edcb7a70": "Settings",
+    "6145d7d8df9b": "Pegasus",
+    "f3db2e34c276": "Your documents, every language",
+    "69a457b8223c": "Open Document",
+    "f147c441b753": "Open .pgs file",
+    "471f9d34fa65": "Recent files",
+    "efe8806f75b8": "No recent files",
+    "aaa63dceae98": "Convert to .pgs",
+    "3e97422b017d": "Not available in {name}",
+    "232bb729aa7e": "This .pgs file doesn''t include a {name} translation yet.",
+    "0036d65eeebc": "Translate now",
+    "201fa450ee15": "Add {name} to this file (requires API key)",
+    "75739d9297b5": "View in another language",
+    "e924840e844d": "Choose one of the available versions",
+    "6013634d8e81": "View original",
+    "7a038620ddbd": "View the original untranslated document"
+  }
+}

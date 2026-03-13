@@ -13,17 +13,19 @@ interface NavbarProps {
 
 const languageLabelMap: Record<string, string> = {
   original: 'Original',
-  en: 'EN',
-  fr: 'FR',
-  es: 'ES',
-  de: 'DE',
-  hi: 'HI',
-  ar: 'AR',
-  ja: 'JA',
-  zh: 'ZH',
-  pt: 'PT',
-  it: 'IT',
+  en: 'English',
+  fr: 'French',
+  es: 'Spanish',
+  de: 'German',
+  hi: 'Hindi',
+  ar: 'Arabic',
+  ja: 'Japanese',
+  zh: 'Chinese',
+  pt: 'Portuguese',
+  it: 'Italian',
 };
+
+const uiLanguageOptions = ['en', 'fr', 'es', 'de', 'hi', 'ar', 'ja', 'zh', 'pt', 'it'];
 
 function truncateFilename(name: string): string {
   if (name.length <= 40) {
@@ -41,10 +43,9 @@ function Navbar({
   onOpenSettings,
   onGoHome,
 }: NavbarProps) {
-  const canChooseLanguage = openFile?.type === 'pgs';
-  const languageOptions = canChooseLanguage
-    ? openFile.pgsData?.availableLanguages ?? ['original']
-    : ['original'];
+  const languageOptions = openFile?.type === 'pgs'
+    ? ['original', ...uiLanguageOptions]
+    : uiLanguageOptions;
 
   return (
     <header className="sticky top-0 z-40 h-14 border-b border-border bg-bg/90 px-4 backdrop-blur">
@@ -66,20 +67,17 @@ function Navbar({
         </div>
 
         <div className="flex items-center gap-2">
-          {openFile ? (
-            <select
-              value={selectedLanguage}
-              disabled={!canChooseLanguage}
-              onChange={(event) => onLanguageChange(event.target.value)}
-              className="h-9 rounded-md border border-border bg-surface px-2 text-sm text-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {languageOptions.map((lang) => (
-                <option key={lang} value={lang}>
-                  {languageLabelMap[lang] ?? lang.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          ) : null}
+          <select
+            value={selectedLanguage}
+            onChange={(event) => onLanguageChange(event.target.value)}
+            className="h-9 rounded-md border border-border bg-surface px-2 text-sm text-textPrimary"
+          >
+            {languageOptions.map((lang) => (
+              <option key={lang} value={lang}>
+                {languageLabelMap[lang] ?? lang.toUpperCase()}
+              </option>
+            ))}
+          </select>
 
           <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
 

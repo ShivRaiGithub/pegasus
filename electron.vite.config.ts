@@ -1,5 +1,8 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import react from '@vitejs/plugin-react';
+import { lingoCompilerPlugin } from '@lingo.dev/compiler/vite';
+import lingoConfig from './lingo.config';
+import path from 'node:path';
 
 export default defineConfig({
   main: {
@@ -28,9 +31,9 @@ export default defineConfig({
   },
   renderer: {
     root: 'src/renderer',
-    plugins: [react()],
+    plugins: [lingoCompilerPlugin(lingoConfig), react()],
     build: {
-      outDir: '../../out/renderer',
+      outDir: path.resolve(__dirname, 'out/renderer'),
     },
   },
 });

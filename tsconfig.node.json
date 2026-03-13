@@ -9,5 +9,5 @@
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
-  "include": ["electron.vite.config.ts"]
+  "include": ["electron.vite.config.ts", "lingo.config.ts"]
 }
