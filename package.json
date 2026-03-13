@@ -13,8 +13,11 @@
   "dependencies": {
     "@lingo.dev/_sdk": "^0.16.0",
     "docx": "^9.5.1",
+    "docx-preview": "^0.3.7",
     "electron-store": "^10.0.1",
     "mammoth": "^1.9.1",
+    "node-html-parser": "^7.1.0",
+    "pdfjs-dist": "^5.5.207",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

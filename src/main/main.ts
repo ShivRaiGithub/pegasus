@@ -2,9 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain, type OpenDialogOptions } from 'electron';
 import Store from 'electron-store';
-import { extractText } from './services/fileExtractor';
-import { createPgsFile, readPgsFile } from './services/pgsManager';
+import { extractText, type PageTextMap } from './services/fileExtractor';
 import { reconstructDocx, reconstructTxt } from './services/fileReconstructor';
+import { createPgsFile, readPgsFile } from './services/pgsManager';
 import { translateChunks } from './services/translator';
 
 type Theme = 'dark' | 'light';
@@ -46,6 +46,7 @@ function parseFileFromArgv(argv: string[]): string | null {
   if (!candidate) {
     return null;
   }
+
   return fs.existsSync(candidate) ? path.resolve(candidate) : null;
 }
 
@@ -78,7 +79,7 @@ function createWindow(): void {
 ipcMain.handle('select-file', async () => {
   const options: OpenDialogOptions = {
     properties: ['openFile'],
-    filters: [{ name: 'Documents', extensions: ['docx', 'txt'] }],
+    filters: [{ name: 'Documents', extensions: ['docx', 'pdf', 'txt'] }],
   };
 
   const result = mainWindow
@@ -126,6 +127,7 @@ ipcMain.handle('select-folder', async () => {
 });
 
 ipcMain.handle('read-file', async (_, filePath: string) => extractText(filePath));
+
 ipcMain.handle('read-pgs-file', async (_, filePath: string) => readPgsFile(filePath));
 
 ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
@@ -133,7 +135,10 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
 
   try {
     const extractedContent = await extractText(filePath);
-    const translatedBuffers: Record<string, Buffer> = {};
+    const originalType = extractedContent.metadata.type;
+    const originalBytes = await fs.promises.readFile(filePath);
+    const originalBase64 = originalBytes.toString('base64');
+    const translatedData: Record<string, string> = {};
 
     for (let index = 0; index < languages.length; index += 1) {
       const lang = languages[index];
@@ -165,18 +170,37 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
 
         event.sender.send('translation-status', {
           phase: 'reconstructing',
-          message: `Reconstructing ${lang.toUpperCase()} file...`,
+          message: `Preparing ${lang.toUpperCase()} document...`,
           lang,
           current: index + 1,
           total: languages.length,
         });
 
-        const reconstructed =
-          extractedContent.metadata.type === 'docx'
-            ? await reconstructDocx(filePath, translatedChunks)
-            : await reconstructTxt(translatedChunks);
+        if (originalType === 'docx') {
+          const reconstructedDocx = await reconstructDocx(filePath, translatedChunks);
+          translatedData[lang] = reconstructedDocx.toString('base64');
+        } else if (originalType === 'pdf') {
+          const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
+          let chunkIndex = 0;
 
-        translatedBuffers[lang] = reconstructed;
+          const translatedPageTextMap: PageTextMap[] = sourcePageTextMap.map((page) => ({
+            page: page.page,
+            items: page.items.map((item) => {
+              const translated = translatedChunks[chunkIndex] ?? item.str;
+              chunkIndex += 1;
+
+              return {
+                ...item,
+                str: translated,
+              };
+            }),
+          }));
+
+          translatedData[lang] = JSON.stringify(translatedPageTextMap);
+        } else {
+          const translatedTxt = await reconstructTxt(translatedChunks);
+          translatedData[lang] = translatedTxt.toString('utf-8');
+        }
 
         event.sender.send('translation-complete-lang', { lang });
       } catch (error) {
@@ -198,7 +222,9 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
       total: languages.length,
     });
 
-    const outputPath = await createPgsFile(filePath, translatedBuffers, outputDir);
+    const originalPayload = originalType === 'txt' ? extractedContent.texts.join('\n') : originalBase64;
+
+    const outputPath = await createPgsFile(filePath, originalType, originalPayload, translatedData, outputDir);
     addRecentFilePath(outputPath);
 
     return {
@@ -207,6 +233,7 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown conversion error';
+
     return {
       success: false,
       error: message,

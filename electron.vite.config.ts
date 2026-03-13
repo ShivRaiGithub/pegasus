@@ -29,11 +29,12 @@ export default defineConfig({
       },
     },
   },
-  renderer: {
-    root: 'src/renderer',
-    plugins: [lingoCompilerPlugin(lingoConfig), react()],
-    build: {
-      outDir: path.resolve(__dirname, 'out/renderer'),
-    },
+ renderer: {
+  root: 'src/renderer',
+  publicDir: path.resolve(__dirname, 'public'), // keep as-is
+  plugins: [lingoCompilerPlugin(lingoConfig), react()],
+  build: {
+    outDir: path.resolve(__dirname, 'out/renderer'),
   },
+},
 });

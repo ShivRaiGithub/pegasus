@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import mammoth from 'mammoth';
-import type { OpenFileState } from '../types/pgs';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { renderAsync } from 'docx-preview';
+import type { OpenFileState, PageTextMap } from '../types/pgs';
 import FallbackModal from './FallbackModal';
+import PDFViewer from './PDFViewer.tsx';
 
 interface ViewerProps {
   openFile: OpenFileState;
@@ -11,92 +12,156 @@ interface ViewerProps {
   onSelectLanguage: (lang: string) => void;
 }
 
-function decodeBase64ToArrayBuffer(base64: string): ArrayBuffer {
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
   const binaryStr = atob(base64);
   const bytes = new Uint8Array(binaryStr.length);
-  for (let i = 0; i < binaryStr.length; i += 1) {
-    bytes[i] = binaryStr.charCodeAt(i);
+
+  for (let index = 0; index < binaryStr.length; index += 1) {
+    bytes[index] = binaryStr.charCodeAt(index);
   }
+
   return bytes.buffer;
 }
 
-function decodeBase64ToText(base64: string): string {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i += 1) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return new TextDecoder().decode(bytes);
-}
-
-function Viewer({ openFile, selectedLanguage, onConvertToPgs, onSelectLanguage }: ViewerProps) {
+function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLanguage }: ViewerProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [renderedHtml, setRenderedHtml] = useState('');
-  const [renderedText, setRenderedText] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const docxContainerRef = useRef<HTMLDivElement | null>(null);
 
   const isPgs = openFile.type === 'pgs';
+  const fileType = openFile.type === 'pgs' ? openFile.pgsData?.originalType : openFile.extractedContent?.metadata.type;
   const availableLanguages = openFile.pgsData?.availableLanguages ?? [];
   const missingSelectedLanguage = isPgs && !availableLanguages.includes(selectedLanguage);
 
+  const selectedPgsPayload = useMemo(() => {
+    if (!isPgs || !openFile.pgsData || missingSelectedLanguage) {
+      return '';
+    }
+
+    return openFile.pgsData.files[selectedLanguage] ?? '';
+  }, [isPgs, missingSelectedLanguage, openFile.pgsData, selectedLanguage]);
+
+  const regularBase64 = openFile.extractedContent?.fileBase64 ?? '';
+
+  const docxBase64 = useMemo(() => {
+    if (fileType !== 'docx') {
+      return '';
+    }
+
+    if (openFile.type === 'pgs') {
+      return selectedPgsPayload;
+    }
+
+    return regularBase64;
+  }, [fileType, openFile.type, regularBase64, selectedPgsPayload]);
+
+  const pdfBase64 = useMemo(() => {
+    if (fileType !== 'pdf') {
+      return '';
+    }
+
+    if (openFile.type === 'pgs') {
+      return openFile.pgsData?.files.original ?? '';
+    }
+
+    return regularBase64;
+  }, [fileType, openFile.pgsData?.files.original, openFile.type, regularBase64]);
+
+  const translatedPageTextMap = useMemo<PageTextMap[] | undefined>(() => {
+    if (fileType !== 'pdf' || openFile.type !== 'pgs' || selectedLanguage === 'original') {
+      return undefined;
+    }
+
+    const raw = openFile.pgsData?.files[selectedLanguage];
+    if (!raw) {
+      return undefined;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as PageTextMap[];
+      return Array.isArray(parsed) ? parsed : undefined;
+    } catch {
+      return undefined;
+    }
+  }, [fileType, openFile.pgsData?.files, openFile.type, selectedLanguage]);
+
+  const txtContent = useMemo(() => {
+    if (fileType !== 'txt') {
+      return '';
+    }
+
+    if (openFile.type === 'pgs') {
+      return selectedPgsPayload;
+    }
+
+    return openFile.extractedContent?.texts.join('\n') ?? '';
+  }, [fileType, openFile.extractedContent?.texts, openFile.type, selectedPgsPayload]);
+
+  // Consolidated rendering function for docx-preview
+  const renderDocx = async (base64: string) => {
+    if (!docxContainerRef.current) return;
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      docxContainerRef.current.innerHTML = '';
+      const arrayBuffer = base64ToArrayBuffer(base64);
+      await renderAsync(arrayBuffer, docxContainerRef.current, undefined, {
+        className: 'docx-preview',
+        inWrapper: true,
+        ignoreWidth: false,
+        ignoreHeight: false,
+        ignoreFonts: false,
+        breakPages: true,
+        ignoreLastRenderedPageBreak: true,
+        experimental: false,
+        trimXmlDeclaration: true,
+        useBase64URL: true,
+        renderChanges: false,
+        renderHeaders: true,
+        renderFooters: true,
+        renderFootnotes: true,
+        renderEndnotes: true,
+      });
+    } catch (err) {
+      console.error('docx-preview failed:', err);
+      setErrorMessage('Failed to render document');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let active = true;
+    if (!openFile) return;
 
-    const renderPgsContent = async () => {
-      if (!isPgs || !openFile.pgsData) {
-        return;
+    if (fileType !== 'docx') {
+      setIsLoading(false);
+      setErrorMessage(null);
+      return;
+    }
+
+    if (openFile.type === 'regular' && openFile.extractedContent?.fileBase64) {
+      void renderDocx(openFile.extractedContent.fileBase64);
+    } else if (openFile.type === 'pgs' && openFile.pgsData) {
+      console.log('pgsData files keys:', Object.keys(openFile.pgsData.files));
+      
+      const langBase64 =
+        selectedLanguage === 'original'
+          ? openFile.pgsData.files['original']
+          : openFile.pgsData.files[selectedLanguage];
+
+      if (langBase64) {
+        void renderDocx(langBase64);
       }
+      // if language not available, FallbackModal handles the UI
+    }
+  }, [openFile, selectedLanguage, fileType]);
 
-      if (missingSelectedLanguage) {
-        setRenderedHtml('');
-        setRenderedText('');
-        return;
-      }
-
-      const selectedBase64 = openFile.pgsData.files[selectedLanguage];
-      if (!selectedBase64) {
-        setError('Unable to read selected language content.');
-        return;
-      }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        if (openFile.pgsData.originalType === 'docx') {
-          const arrayBuffer = decodeBase64ToArrayBuffer(selectedBase64);
-          const result = await mammoth.convertToHtml({ arrayBuffer });
-          if (active) {
-            setRenderedHtml(result.value);
-            setRenderedText('');
-          }
-        } else {
-          const plainText = decodeBase64ToText(selectedBase64);
-          if (active) {
-            setRenderedText(plainText);
-            setRenderedHtml('');
-          }
-        }
-      } catch (renderError) {
-        if (active) {
-          const message = renderError instanceof Error ? renderError.message : 'Failed to render file.';
-          setError(message);
-        }
-      } finally {
-        if (active) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    renderPgsContent();
-
-    return () => {
-      active = false;
-    };
-  }, [isPgs, missingSelectedLanguage, openFile, selectedLanguage]);
-
-  const regularParagraphs = useMemo(() => openFile.extractedContent?.texts ?? [], [openFile]);
+  useEffect(() => {
+    if (fileType !== 'docx') {
+      setIsLoading(false);
+      setErrorMessage(null);
+    }
+  }, [fileType]);
 
   return (
     <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-6">
@@ -113,38 +178,44 @@ function Viewer({ openFile, selectedLanguage, onConvertToPgs, onSelectLanguage }
       ) : null}
 
       <div className="rounded-2xl border border-border bg-surface">
-        {openFile.type === 'regular' ? (
-          <div className="viewer-prose mx-auto max-w-[800px] px-12 py-12 text-textPrimary">
-            {regularParagraphs.map((paragraph, index) => (
-              <p key={`${paragraph.slice(0, 20)}-${index}`}>{paragraph}</p>
-            ))}
-          </div>
-        ) : null}
-
-        {openFile.type === 'pgs' ? (
+        {missingSelectedLanguage ? null : (
           <div className="min-h-[480px] p-6">
-            {isLoading ? (
-              <div className="flex h-72 items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-accent" />
+            {fileType === 'docx' ? (
+              <div style={{ position: 'relative' }}>
+                <div className="docx-container" ref={docxContainerRef} />
+                {isLoading && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'rgba(10,10,15,0.7)',
+                    }}
+                  >
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-accent" />
+                  </div>
+                )}
+                {errorMessage && <p className="mt-2 text-sm text-error">{errorMessage}</p>}
               </div>
             ) : null}
 
-            {!isLoading && error ? <p className="text-sm text-error">{error}</p> : null}
-
-            {!isLoading && !error && renderedHtml ? (
-              <div
-                className="viewer-prose mx-auto max-w-[800px] px-12 py-12 text-textPrimary"
-                dangerouslySetInnerHTML={{ __html: renderedHtml }}
+            {fileType === 'pdf' ? (
+              <PDFViewer
+                pdfBase64={pdfBase64}
+                translatedPageTextMap={translatedPageTextMap}
+                isDark={isDark}
               />
             ) : null}
 
-            {!isLoading && !error && renderedText ? (
-              <pre className="mx-auto max-w-[800px] whitespace-pre-wrap px-12 py-12 text-base leading-8 text-textPrimary">
-                {renderedText}
+            {fileType === 'txt' ? (
+              <pre className="mx-auto max-w-[800px] whitespace-pre-wrap rounded-md bg-bg px-6 py-6 font-mono text-base leading-8 text-textPrimary">
+                {txtContent}
               </pre>
             ) : null}
           </div>
-        ) : null}
+        )}
       </div>
 
       {missingSelectedLanguage && openFile.type === 'pgs' ? (
@@ -154,7 +225,7 @@ function Viewer({ openFile, selectedLanguage, onConvertToPgs, onSelectLanguage }
           onTranslateNow={onConvertToPgs}
           onSelectLanguage={onSelectLanguage}
           onViewOriginal={() => onSelectLanguage('original')}
-          isDark
+          isDark={isDark}
         />
       ) : null}
     </section>

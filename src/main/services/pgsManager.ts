@@ -4,7 +4,8 @@ import path from 'node:path';
 export interface PgsFile {
   version: string;
   originalName: string;
-  originalType: 'docx' | 'txt';
+  originalType: 'docx' | 'pdf' | 'txt';
+  storageFormat: 'html' | 'pdf' | 'text';
   createdAt: string;
   availableLanguages: string[];
   files: Record<string, string>;
@@ -12,28 +13,29 @@ export interface PgsFile {
 
 export async function createPgsFile(
   originalPath: string,
-  translatedFiles: Record<string, Buffer>,
+  originalType: 'docx' | 'pdf' | 'txt',
+  originalFileBase64: string,
+  translatedData: Record<string, string>,
   outputDir: string,
 ): Promise<string> {
-  const originalBuffer = await fs.promises.readFile(originalPath);
-  const extension = path.extname(originalPath).toLowerCase();
-
-  const originalType: 'docx' | 'txt' = extension === '.docx' ? 'docx' : 'txt';
+  const storageFormat: 'html' | 'pdf' | 'text' =
+    originalType === 'docx' ? 'html' : originalType === 'pdf' ? 'pdf' : 'text';
 
   const files: Record<string, string> = {
-    original: originalBuffer.toString('base64'),
+    original: originalFileBase64,
   };
 
-  for (const [language, data] of Object.entries(translatedFiles)) {
-    files[language] = data.toString('base64');
+  for (const [language, data] of Object.entries(translatedData)) {
+    files[language] = data;
   }
 
   const pgs: PgsFile = {
-    version: '1.0',
+    version: '1.1',
     originalName: path.basename(originalPath),
     originalType,
+    storageFormat,
     createdAt: new Date().toISOString(),
-    availableLanguages: ['original', ...Object.keys(translatedFiles)],
+    availableLanguages: ['original', ...Object.keys(translatedData)],
     files,
   };
 
@@ -48,7 +50,16 @@ export async function readPgsFile(filePath: string): Promise<PgsFile> {
   const raw = await fs.promises.readFile(filePath, 'utf-8');
   const parsed = JSON.parse(raw) as PgsFile;
 
-  if (!parsed.files?.original || !Array.isArray(parsed.availableLanguages)) {
+  if (parsed.version === '1.0') {
+    throw new Error('This file was created with an older version of Pegasus. Please reconvert your document.');
+  }
+
+  if (
+    parsed.version !== '1.1' ||
+    !parsed.files?.original ||
+    !Array.isArray(parsed.availableLanguages) ||
+    (parsed.storageFormat !== 'html' && parsed.storageFormat !== 'pdf' && parsed.storageFormat !== 'text')
+  ) {
     throw new Error('Invalid .pgs file format.');
   }
 

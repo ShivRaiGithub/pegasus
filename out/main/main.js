@@ -3,74 +3,88 @@ import path from "node:path";
 import { ipcMain, dialog, app, BrowserWindow } from "electron";
 import Store from "electron-store";
 import mammoth from "mammoth";
-import { Paragraph, HeadingLevel, Document, Packer } from "docx";
+import { Paragraph, HeadingLevel, TextRun, Document, Packer } from "docx";
 import { LingoDotDevEngine } from "@lingo.dev/_sdk";
 import __cjs_mod__ from "node:module";
 const __filename = import.meta.filename;
 const __dirname = import.meta.dirname;
 const require2 = __cjs_mod__.createRequire(import.meta.url);
+async function extractDocx(filePath) {
+  const buffer = await fs.promises.readFile(filePath);
+  const result = await mammoth.extractRawText({ buffer });
+  const paragraphs = result.value.split("\n").map((line) => line.trim()).filter(Boolean);
+  return {
+    texts: paragraphs,
+    fileBase64: buffer.toString("base64"),
+    // full file for docx-preview rendering
+    metadata: {
+      type: "docx",
+      originalPath: filePath,
+      structure: {
+        paragraphCount: paragraphs.length
+      }
+    }
+  };
+}
+async function extractPdf(filePath) {
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "";
+  const buffer = await fs.promises.readFile(filePath);
+  const data = new Uint8Array(buffer);
+  const document = await pdfjs.getDocument({ data, useSystemFonts: true }).promise;
+  const texts = [];
+  const pageTextMap = [];
+  for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
+    const page = await document.getPage(pageNumber);
+    const textContent = await page.getTextContent();
+    const viewport = page.getViewport({ scale: 1 });
+    const items = textContent.items.filter((item) => "str" in item && typeof item.str === "string" && item.str.trim().length > 0).map((item) => ({
+      str: item.str,
+      x: item.transform[4],
+      y: viewport.height - item.transform[5],
+      width: item.width,
+      height: item.height
+    }));
+    pageTextMap.push({ page: pageNumber, items });
+    for (const item of items) {
+      texts.push(item.str);
+    }
+  }
+  return {
+    texts,
+    fileBase64: buffer.toString("base64"),
+    // full PDF for pdfjs canvas rendering
+    metadata: {
+      type: "pdf",
+      originalPath: filePath,
+      structure: {
+        pageTextMap,
+        numPages: document.numPages
+      }
+    }
+  };
+}
+function extractTxt(filePath) {
+  const rawText = fs.readFileSync(filePath, "utf-8");
+  const lines = rawText.split("\n").map((line) => line.trim()).filter(Boolean);
+  return {
+    texts: lines,
+    fileBase64: Buffer.from(rawText, "utf-8").toString("base64"),
+    metadata: {
+      type: "txt",
+      originalPath: filePath,
+      structure: {
+        lineCount: lines.length
+      }
+    }
+  };
+}
 async function extractText(filePath) {
   const extension = path.extname(filePath).toLowerCase();
-  if (extension === ".docx") {
-    const result = await mammoth.extractRawText({ path: filePath });
-    const paragraphs = result.value.split("\n").map((line) => line.trim()).filter(Boolean);
-    return {
-      texts: paragraphs,
-      metadata: {
-        type: "docx",
-        originalPath: filePath,
-        structure: {
-          paragraphCount: paragraphs.length
-        }
-      }
-    };
-  }
-  if (extension === ".txt") {
-    const rawText = fs.readFileSync(filePath, "utf-8");
-    const lines = rawText.split("\n").map((line) => line.trim()).filter(Boolean);
-    return {
-      texts: lines,
-      metadata: {
-        type: "txt",
-        originalPath: filePath,
-        structure: {
-          lineCount: lines.length
-        }
-      }
-    };
-  }
-  throw new Error("Unsupported file type. Please select a DOCX or TXT file.");
-}
-async function createPgsFile(originalPath, translatedFiles, outputDir) {
-  const originalBuffer = await fs.promises.readFile(originalPath);
-  const extension = path.extname(originalPath).toLowerCase();
-  const originalType = extension === ".docx" ? "docx" : "txt";
-  const files = {
-    original: originalBuffer.toString("base64")
-  };
-  for (const [language, data] of Object.entries(translatedFiles)) {
-    files[language] = data.toString("base64");
-  }
-  const pgs = {
-    version: "1.0",
-    originalName: path.basename(originalPath),
-    originalType,
-    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-    availableLanguages: ["original", ...Object.keys(translatedFiles)],
-    files
-  };
-  await fs.promises.mkdir(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, `${path.parse(originalPath).name}.pgs`);
-  await fs.promises.writeFile(outputPath, JSON.stringify(pgs, null, 2), "utf-8");
-  return outputPath;
-}
-async function readPgsFile(filePath) {
-  const raw = await fs.promises.readFile(filePath, "utf-8");
-  const parsed = JSON.parse(raw);
-  if (!parsed.files?.original || !Array.isArray(parsed.availableLanguages)) {
-    throw new Error("Invalid .pgs file format.");
-  }
-  return parsed;
+  if (extension === ".docx") return extractDocx(filePath);
+  if (extension === ".pdf") return extractPdf(filePath);
+  if (extension === ".txt") return extractTxt(filePath);
+  throw new Error("Unsupported file type. Please select a DOCX, PDF, or TXT file.");
 }
 function isHeadingCandidate(text) {
   const normalized = text.trim();
@@ -82,14 +96,21 @@ function isHeadingCandidate(text) {
   return isAllCaps || isShortLine;
 }
 async function reconstructDocx(originalPath, translatedChunks) {
-  const originalRaw = await mammoth.extractRawText({ path: originalPath });
-  const originalParagraphs = originalRaw.value.split("\n").map((line) => line.trim()).filter(Boolean);
+  const originalBuffer = await fs.promises.readFile(originalPath);
+  const htmlResult = await mammoth.convertToHtml({ buffer: originalBuffer });
+  const originalLines = htmlResult.value.replace(/<[^>]+>/g, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
   const paragraphs = translatedChunks.map((chunk, index) => {
-    const sourceLine = originalParagraphs[index] ?? "";
+    const sourceLine = originalLines[index] ?? chunk;
     const useHeading = isHeadingCandidate(sourceLine);
+    if (useHeading) {
+      return new Paragraph({
+        text: chunk,
+        heading: HeadingLevel.HEADING_1
+      });
+    }
     return new Paragraph({
-      text: chunk,
-      ...useHeading ? { heading: HeadingLevel.HEADING_1 } : {}
+      children: [new TextRun({ text: chunk, size: 24 })],
+      spacing: { after: 200 }
     });
   });
   const doc = new Document({
@@ -104,6 +125,39 @@ async function reconstructDocx(originalPath, translatedChunks) {
 async function reconstructTxt(translatedChunks) {
   const output = translatedChunks.join("\n");
   return Buffer.from(output, "utf-8");
+}
+async function createPgsFile(originalPath, originalType, originalFileBase64, translatedData, outputDir) {
+  const storageFormat = originalType === "docx" ? "html" : originalType === "pdf" ? "pdf" : "text";
+  const files = {
+    original: originalFileBase64
+  };
+  for (const [language, data] of Object.entries(translatedData)) {
+    files[language] = data;
+  }
+  const pgs = {
+    version: "1.1",
+    originalName: path.basename(originalPath),
+    originalType,
+    storageFormat,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    availableLanguages: ["original", ...Object.keys(translatedData)],
+    files
+  };
+  await fs.promises.mkdir(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, `${path.parse(originalPath).name}.pgs`);
+  await fs.promises.writeFile(outputPath, JSON.stringify(pgs, null, 2), "utf-8");
+  return outputPath;
+}
+async function readPgsFile(filePath) {
+  const raw = await fs.promises.readFile(filePath, "utf-8");
+  const parsed = JSON.parse(raw);
+  if (parsed.version === "1.0") {
+    throw new Error("This file was created with an older version of Pegasus. Please reconvert your document.");
+  }
+  if (parsed.version !== "1.1" || !parsed.files?.original || !Array.isArray(parsed.availableLanguages) || parsed.storageFormat !== "html" && parsed.storageFormat !== "pdf" && parsed.storageFormat !== "text") {
+    throw new Error("Invalid .pgs file format.");
+  }
+  return parsed;
 }
 async function translateChunks(chunks, targetLocale, apiKey, instructions, onProgress) {
   if (!apiKey.trim()) {
@@ -183,7 +237,7 @@ function createWindow() {
 ipcMain.handle("select-file", async () => {
   const options = {
     properties: ["openFile"],
-    filters: [{ name: "Documents", extensions: ["docx", "txt"] }]
+    filters: [{ name: "Documents", extensions: ["docx", "pdf", "txt"] }]
   };
   const result = mainWindow ? await dialog.showOpenDialog(mainWindow, options) : await dialog.showOpenDialog(options);
   if (result.canceled || result.filePaths.length === 0) {
@@ -218,7 +272,10 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
   const { filePath, languages, apiKey, instructions, outputDir } = options;
   try {
     const extractedContent = await extractText(filePath);
-    const translatedBuffers = {};
+    const originalType = extractedContent.metadata.type;
+    const originalBytes = await fs.promises.readFile(filePath);
+    const originalBase64 = originalBytes.toString("base64");
+    const translatedData = {};
     for (let index = 0; index < languages.length; index += 1) {
       const lang = languages[index];
       event.sender.send("translation-status", {
@@ -246,13 +303,33 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
         );
         event.sender.send("translation-status", {
           phase: "reconstructing",
-          message: `Reconstructing ${lang.toUpperCase()} file...`,
+          message: `Preparing ${lang.toUpperCase()} document...`,
           lang,
           current: index + 1,
           total: languages.length
         });
-        const reconstructed = extractedContent.metadata.type === "docx" ? await reconstructDocx(filePath, translatedChunks) : await reconstructTxt(translatedChunks);
-        translatedBuffers[lang] = reconstructed;
+        if (originalType === "docx") {
+          const reconstructedDocx = await reconstructDocx(filePath, translatedChunks);
+          translatedData[lang] = reconstructedDocx.toString("base64");
+        } else if (originalType === "pdf") {
+          const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
+          let chunkIndex = 0;
+          const translatedPageTextMap = sourcePageTextMap.map((page) => ({
+            page: page.page,
+            items: page.items.map((item) => {
+              const translated = translatedChunks[chunkIndex] ?? item.str;
+              chunkIndex += 1;
+              return {
+                ...item,
+                str: translated
+              };
+            })
+          }));
+          translatedData[lang] = JSON.stringify(translatedPageTextMap);
+        } else {
+          const translatedTxt = await reconstructTxt(translatedChunks);
+          translatedData[lang] = translatedTxt.toString("utf-8");
+        }
         event.sender.send("translation-complete-lang", { lang });
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown translation error";
@@ -269,7 +346,8 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
       current: languages.length,
       total: languages.length
     });
-    const outputPath = await createPgsFile(filePath, translatedBuffers, outputDir);
+    const originalPayload = originalType === "txt" ? extractedContent.texts.join("\n") : originalBase64;
+    const outputPath = await createPgsFile(filePath, originalType, originalPayload, translatedData, outputDir);
     addRecentFilePath(outputPath);
     return {
       success: true,
