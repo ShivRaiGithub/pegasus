@@ -67,7 +67,7 @@ function FallbackModal({
             <h4 className="font-medium text-textPrimary">View in another language</h4>
             <p className="mt-1 text-sm text-textSecondary">Choose one of the available versions</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {availableLanguages.map((lang) => (
+              {availableLanguages.filter(l => l !== 'original').map((lang) => (
                 <button
                   key={lang}
                   type="button"

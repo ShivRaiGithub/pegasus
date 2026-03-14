@@ -271,11 +271,30 @@ ipcMain.handle("read-pgs-file", async (_, filePath) => readPgsFile(filePath));
 ipcMain.handle("convert-to-pgs", async (event, options) => {
   const { filePath, languages, apiKey, instructions, outputDir } = options;
   try {
-    const extractedContent = await extractText(filePath);
-    const originalType = extractedContent.metadata.type;
-    const originalBytes = await fs.promises.readFile(filePath);
-    const originalBase64 = originalBytes.toString("base64");
+    let originalType;
+    let originalBase64;
+    let extractedContent;
     const translatedData = {};
+    if (filePath.toLowerCase().endsWith(".pgs")) {
+      const pgsData = await readPgsFile(filePath);
+      originalType = pgsData.originalType;
+      originalBase64 = pgsData.files["original"];
+      const tmpPath = path.join(app.getPath("temp"), `pegasus_temp_${Date.now()}.${originalType}`);
+      await fs.promises.writeFile(tmpPath, Buffer.from(originalBase64, "base64"));
+      extractedContent = await extractText(tmpPath);
+      await fs.promises.unlink(tmpPath).catch(() => {
+      });
+      for (const lang of pgsData.availableLanguages) {
+        if (lang !== "original" && typeof pgsData.files[lang] === "string") {
+          translatedData[lang] = pgsData.files[lang];
+        }
+      }
+    } else {
+      extractedContent = await extractText(filePath);
+      originalType = extractedContent.metadata.type;
+      const originalBytes = await fs.promises.readFile(filePath);
+      originalBase64 = originalBytes.toString("base64");
+    }
     for (let index = 0; index < languages.length; index += 1) {
       const lang = languages[index];
       event.sender.send("translation-status", {

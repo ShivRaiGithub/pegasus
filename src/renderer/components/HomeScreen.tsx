@@ -6,6 +6,7 @@ interface HomeScreenProps {
   onOpenRecent: (filePath: string) => void;
   isDark: boolean;
   preloadError: string | null;
+  recentFiles: string[];
 }
 
 function fileTypeLabel(filePath: string): string {
@@ -21,28 +22,7 @@ function fileName(filePath: string): string {
   return parts[parts.length - 1];
 }
 
-function HomeScreen({ onOpenFile, onOpenPgs, onOpenRecent, preloadError }: HomeScreenProps) {
-  const [recentFiles, setRecentFiles] = useState<string[]>([]);
-
-  useEffect(() => {
-    let active = true;
-
-    const loadRecent = async () => {
-      if (!window.electronAPI) {
-        return;
-      }
-      const files = await window.electronAPI.getRecentFiles();
-      if (active) {
-        setRecentFiles(files.slice(0, 10));
-      }
-    };
-
-    loadRecent();
-
-    return () => {
-      active = false;
-    };
-  }, []);
+function HomeScreen({ onOpenFile, onOpenPgs, onOpenRecent, preloadError, recentFiles }: HomeScreenProps) {
 
   const hasRecent = useMemo(() => recentFiles.length > 0, [recentFiles]);
 
@@ -79,6 +59,7 @@ function HomeScreen({ onOpenFile, onOpenPgs, onOpenRecent, preloadError }: HomeS
             Open .pgs file
           </button>
         </div>
+        <p className="mt-4 text-xs text-textSecondary">Note: Supports only TXT and DOCX (Word) for conversion</p>
       </section>
 
       <section className="mt-8 w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">

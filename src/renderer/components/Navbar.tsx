@@ -62,6 +62,17 @@ function Navbar({
           <span className="text-lg font-semibold">Pegasus</span>
         </button>
 
+        {openFile ? (
+          <button
+            type="button"
+            onClick={onGoHome}
+            className="rounded border border-border bg-bg px-2 py-1 text-sm text-textSecondary transition hover:border-accent hover:text-textPrimary"
+            title="Go back to Home"
+          >
+            ← Back
+          </button>
+        ) : null}
+
         <div className="min-w-0 flex-1 text-center text-sm text-textSecondary">
           {openFile ? <span>{truncateFilename(openFile.fileName)}</span> : null}
         </div>

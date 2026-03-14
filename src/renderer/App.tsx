@@ -25,6 +25,7 @@ function App() {
   const [apiKey, setApiKey] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [preloadError, setPreloadError] = useState<string | null>(null);
+  const [recentFiles, setRecentFiles] = useState<string[]>([]);
 
   useEffect(() => {
     const loadInitialState = async () => {
@@ -33,14 +34,16 @@ function App() {
         return;
       }
 
-      const [savedApiKey, theme, pendingOpenPath] = await Promise.all([
+      const [savedApiKey, theme, pendingOpenPath, savedRecent] = await Promise.all([
         window.electronAPI.getApiKey(),
         window.electronAPI.getTheme(),
         window.electronAPI.openPgsFilePath(),
+        window.electronAPI.getRecentFiles(),
       ]);
 
       setApiKey(savedApiKey);
       setIsDark(theme === 'dark');
+      setRecentFiles(savedRecent.slice(0, 10));
 
       if (pendingOpenPath) {
         await openFromPath(pendingOpenPath);
@@ -49,6 +52,12 @@ function App() {
 
     loadInitialState();
   }, []);
+
+  const refreshRecentFiles = async () => {
+    if (!window.electronAPI) return;
+    const files = await window.electronAPI.getRecentFiles();
+    setRecentFiles(files.slice(0, 10));
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
@@ -91,6 +100,7 @@ function App() {
       setSelectedLanguage(nextLanguage);
       setCurrentScreen('viewer');
       await window.electronAPI.addRecentFile(filePath);
+      await refreshRecentFiles();
       return;
     }
 
@@ -148,7 +158,10 @@ function App() {
     }
   };
 
-  const canConvert = useMemo(() => openFile?.type === 'regular', [openFile]);
+  const canConvert = useMemo(
+    () => openFile?.type === 'regular' || openFile?.type === 'pgs',
+    [openFile]
+  );
 
   return (
     <div className="min-h-screen bg-bg text-textPrimary">
@@ -164,6 +177,7 @@ function App() {
 
       {currentScreen === 'home' ? (
         <HomeScreen
+          recentFiles={recentFiles}
           onOpenFile={handleOpenFile}
           onOpenPgs={handleOpenPgs}
           onOpenRecent={(filePath) => void openFromPath(filePath)}
@@ -203,6 +217,7 @@ function App() {
           isDark={isDark}
           onClose={() => setSettingsOpen(false)}
           onSavedApiKey={setApiKey}
+          onClearedRecent={() => void refreshRecentFiles()}
         />
       ) : null}
 

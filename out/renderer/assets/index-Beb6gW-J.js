@@ -15954,13 +15954,14 @@ function Navbar({
 }) {
   const {
     t
-  } = useTranslation(["f53e770487b5", "dd1cb5c41552", "693177c8db3f", "7e76edcb7a70"]);
+  } = useTranslation(["f53e770487b5", "dd1cb5c41552", "9484acade044", "c4245b27467c", "693177c8db3f", "7e76edcb7a70"]);
   const languageOptions2 = openFile?.type === "pgs" ? ["original", ...uiLanguageOptions] : uiLanguageOptions;
   return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "sticky top-0 z-40 h-14 border-b border-border bg-bg/90 px-4 backdrop-blur", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-full max-w-[1400px] items-center justify-between gap-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: "flex items-center gap-2 text-textPrimary", onClick: onGoHome, title: t("f53e770487b5", "Go home"), children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6 text-accent", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 3.5c-2.9 0-5.7 1.17-7.78 3.26a1 1 0 0 0 1.41 1.41A9 9 0 0 1 12 5.5a1 1 0 1 0 0-2Zm-8.22 7.26A10.98 10.98 0 0 0 1 18.5a1 1 0 1 0 2 0 9 9 0 0 1 2.28-6.02 1 1 0 1 0-1.5-1.72Zm7.72-1.26a6.5 6.5 0 0 0-6.5 6.5 1 1 0 1 0 2 0 4.5 4.5 0 1 1 9 0v3a2.5 2.5 0 1 0 2-2.45V16a6.5 6.5 0 0 0-6.5-6.5Zm6.5 11.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1Z" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-semibold", children: t("dd1cb5c41552", "Pegasus") })
     ] }),
+    openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onGoHome, className: "rounded border border-border bg-bg px-2 py-1 text-sm text-textSecondary transition hover:border-accent hover:text-textPrimary", title: t("9484acade044", "Go back to Home"), children: t("c4245b27467c", "← Back") }) : null,
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-w-0 flex-1 text-center text-sm text-textSecondary", children: openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: truncateFilename(openFile.fileName) }) : null }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: selectedLanguage, onChange: (event) => onLanguageChange(event.target.value), className: "h-9 rounded-md border border-border bg-surface px-2 text-sm text-textPrimary", children: languageOptions2.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap[lang] ?? lang.toUpperCase() }, lang)) }),
@@ -15984,28 +15985,12 @@ function HomeScreen({
   onOpenFile,
   onOpenPgs,
   onOpenRecent,
-  preloadError
+  preloadError,
+  recentFiles
 }) {
   const {
     t
-  } = useTranslation(["6145d7d8df9b", "f3db2e34c276", "69a457b8223c", "f147c441b753", "471f9d34fa65", "efe8806f75b8"]);
-  const [recentFiles, setRecentFiles] = reactExports.useState([]);
-  reactExports.useEffect(() => {
-    let active = true;
-    const loadRecent = async () => {
-      if (!window.electronAPI) {
-        return;
-      }
-      const files = await window.electronAPI.getRecentFiles();
-      if (active) {
-        setRecentFiles(files.slice(0, 10));
-      }
-    };
-    loadRecent();
-    return () => {
-      active = false;
-    };
-  }, []);
+  } = useTranslation(["6145d7d8df9b", "f3db2e34c276", "69a457b8223c", "f147c441b753", "56358f44b552", "471f9d34fa65", "efe8806f75b8"]);
   const hasRecent = reactExports.useMemo(() => recentFiles.length > 0, [recentFiles]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-5xl flex-col items-center px-6 py-10", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mt-8 flex w-full max-w-3xl flex-col items-center rounded-2xl border border-border bg-surface px-6 py-10 text-center", children: [
@@ -16016,7 +16001,8 @@ function HomeScreen({
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-7 flex flex-wrap justify-center gap-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenFile, className: "rounded-md bg-accent px-5 py-2.5 font-medium text-white transition hover:opacity-90", children: t("69a457b8223c", "Open Document") }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenPgs, className: "rounded-md border border-border bg-bg px-5 py-2.5 font-medium text-textPrimary transition hover:border-accent", children: t("f147c441b753", "Open .pgs file") })
-      ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textSecondary", children: t("56358f44b552", "Note: Supports only TXT and DOCX (Word) for conversion") })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mt-8 w-full max-w-3xl rounded-2xl border border-border bg-surface p-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "mb-4 text-lg font-semibold text-textPrimary", children: t("471f9d34fa65", "Recent files") }),
@@ -22376,7 +22362,7 @@ function FallbackModal({
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 text-accent", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm7.93 9h-3.1a15.3 15.3 0 0 0-1.48-5A8.03 8.03 0 0 1 19.93 11ZM12 4c.94 0 2.38 2.06 2.9 7H9.1C9.62 6.06 11.06 4 12 4ZM8.65 6a15.3 15.3 0 0 0-1.48 5h-3.1A8.03 8.03 0 0 1 8.65 6ZM4.07 13h3.1a15.3 15.3 0 0 0 1.48 5A8.03 8.03 0 0 1 4.07 13ZM12 20c-.94 0-2.38-2.06-2.9-7h5.8c-.52 4.94-1.96 7-2.9 7Zm3.35-2a15.3 15.3 0 0 0 1.48-5h3.1a8.03 8.03 0 0 1-4.58 5Z" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium text-textPrimary", children: t("75739d9297b5", "View in another language") }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("e924840e844d", "Choose one of the available versions") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3 flex flex-wrap gap-2", children: availableLanguages.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onSelectLanguage(lang), className: "rounded-md border border-border px-2 py-1 text-xs text-textPrimary hover:border-accent", children: languageNameMap[lang] ?? lang.toUpperCase() }, lang)) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3 flex flex-wrap gap-2", children: availableLanguages.filter((l) => l !== "original").map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onSelectLanguage(lang), className: "rounded-md border border-border px-2 py-1 text-xs text-textPrimary hover:border-accent", children: languageNameMap[lang] ?? lang.toUpperCase() }, lang)) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-bg p-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 text-accent", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M7 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5L13.5 3H7Zm6 1.5L17.5 9H13V4.5Z" }) }) }),
@@ -48740,7 +48726,8 @@ function ConvertFlow({
 }
 function SettingsPanel({
   onClose,
-  onSavedApiKey
+  onSavedApiKey,
+  onClearedRecent
 }) {
   const {
     t
@@ -48767,6 +48754,7 @@ function SettingsPanel({
   const clearRecent = async () => {
     if (!window.electronAPI) return;
     await window.electronAPI.clearRecentFiles();
+    onClearedRecent();
     setStatus("Recent files cleared");
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 bg-black/60", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface p-6 shadow-2xl", children: [
@@ -48805,25 +48793,33 @@ function App() {
   const [apiKey, setApiKey] = reactExports.useState("");
   const [settingsOpen, setSettingsOpen] = reactExports.useState(false);
   const [preloadError, setPreloadError] = reactExports.useState(null);
+  const [recentFiles, setRecentFiles] = reactExports.useState([]);
   reactExports.useEffect(() => {
     const loadInitialState = async () => {
       if (!window.electronAPI) {
         setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
         return;
       }
-      const [savedApiKey, theme, pendingOpenPath] = await Promise.all([
+      const [savedApiKey, theme, pendingOpenPath, savedRecent] = await Promise.all([
         window.electronAPI.getApiKey(),
         window.electronAPI.getTheme(),
-        window.electronAPI.openPgsFilePath()
+        window.electronAPI.openPgsFilePath(),
+        window.electronAPI.getRecentFiles()
       ]);
       setApiKey(savedApiKey);
       setIsDark(theme === "dark");
+      setRecentFiles(savedRecent.slice(0, 10));
       if (pendingOpenPath) {
         await openFromPath(pendingOpenPath);
       }
     };
     loadInitialState();
   }, []);
+  const refreshRecentFiles = async () => {
+    if (!window.electronAPI) return;
+    const files = await window.electronAPI.getRecentFiles();
+    setRecentFiles(files.slice(0, 10));
+  };
   reactExports.useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
@@ -48854,6 +48850,7 @@ function App() {
       setSelectedLanguage(nextLanguage);
       setCurrentScreen("viewer");
       await window.electronAPI.addRecentFile(filePath);
+      await refreshRecentFiles();
       return;
     }
     const extracted = await window.electronAPI.readFile(filePath);
@@ -48904,7 +48901,10 @@ function App() {
       }));
     }
   };
-  const canConvert = reactExports.useMemo(() => openFile?.type === "regular", [openFile]);
+  const canConvert = reactExports.useMemo(
+    () => openFile?.type === "regular" || openFile?.type === "pgs",
+    [openFile]
+  );
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-bg text-textPrimary", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       Navbar,
@@ -48921,6 +48921,7 @@ function App() {
     currentScreen === "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
       HomeScreen,
       {
+        recentFiles,
         onOpenFile: handleOpenFile,
         onOpenPgs: handleOpenPgs,
         onOpenRecent: (filePath) => void openFromPath(filePath),
@@ -48955,7 +48956,8 @@ function App() {
       {
         isDark,
         onClose: () => setSettingsOpen(false),
-        onSavedApiKey: setApiKey
+        onSavedApiKey: setApiKey,
+        onClearedRecent: () => void refreshRecentFiles()
       }
     ) : null,
     preloadError && currentScreen !== "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed bottom-4 left-1/2 z-50 w-[90%] max-w-xl -translate-x-1/2 rounded-md border border-error/40 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,

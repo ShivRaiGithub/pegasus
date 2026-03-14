@@ -6,14 +6,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: '#0a0a0f',
-        surface: '#111118',
-        border: '#1e1e2e',
-        textPrimary: '#e2e2f0',
-        textSecondary: '#6b6b8a',
-        accent: '#4f6ef7',
-        success: '#22c55e',
-        error: '#ef4444',
+        bg: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        border: 'var(--color-border)',
+        textPrimary: 'var(--color-text-primary)',
+        textSecondary: 'var(--color-text-secondary)',
+        accent: 'var(--color-accent)',
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
       },
     },
   },

@@ -4,9 +4,10 @@ interface SettingsPanelProps {
   isDark: boolean;
   onClose: () => void;
   onSavedApiKey: (key: string) => void;
+  onClearedRecent: () => void;
 }
 
-function SettingsPanel({ onClose, onSavedApiKey }: SettingsPanelProps) {
+function SettingsPanel({ onClose, onSavedApiKey, onClearedRecent }: SettingsPanelProps) {
   const [apiKey, setApiKey] = useState('');
   const [version, setVersion] = useState('');
   const [status, setStatus] = useState<string | null>(null);
@@ -36,6 +37,7 @@ function SettingsPanel({ onClose, onSavedApiKey }: SettingsPanelProps) {
   const clearRecent = async () => {
     if (!window.electronAPI) return;
     await window.electronAPI.clearRecentFiles();
+    onClearedRecent();
     setStatus('Recent files cleared');
   };
 
