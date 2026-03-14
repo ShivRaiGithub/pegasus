@@ -48909,7 +48909,7 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       Navbar,
       {
-        openFile,
+        openFile: currentScreen === "home" ? null : openFile,
         selectedLanguage,
         onLanguageChange: handleLanguageChange,
         isDark,
@@ -48941,7 +48941,7 @@ function App() {
         onSelectLanguage: handleLanguageChange
       }
     ) : null,
-    currentScreen === "convert" && openFile?.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+    currentScreen === "convert" && (openFile?.type === "regular" || openFile?.type === "pgs") ? /* @__PURE__ */ jsxRuntimeExports.jsx(
       ConvertFlow,
       {
         filePath: openFile.filePath,

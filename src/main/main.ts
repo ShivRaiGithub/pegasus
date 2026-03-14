@@ -132,6 +132,7 @@ ipcMain.handle('read-pgs-file', async (_, filePath: string) => readPgsFile(fileP
 
 ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
   const { filePath, languages, apiKey, instructions, outputDir } = options;
+  let tmpPathToClean: string | null = null;
 
   try {
     let originalType: 'docx' | 'pdf' | 'txt';
@@ -144,10 +145,9 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
       originalType = pgsData.originalType;
       originalBase64 = pgsData.files['original'];
 
-      const tmpPath = path.join(app.getPath('temp'), `pegasus_temp_${Date.now()}.${originalType}`);
-      await fs.promises.writeFile(tmpPath, Buffer.from(originalBase64, 'base64'));
-      extractedContent = await extractText(tmpPath);
-      await fs.promises.unlink(tmpPath).catch(() => {});
+      tmpPathToClean = path.join(app.getPath('temp'), `pegasus_temp_${Date.now()}.${originalType}`);
+      await fs.promises.writeFile(tmpPathToClean, Buffer.from(originalBase64, 'base64'));
+      extractedContent = await extractText(tmpPathToClean);
 
       for (const lang of pgsData.availableLanguages) {
         if (lang !== 'original' && typeof pgsData.files[lang] === 'string') {
@@ -198,7 +198,7 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
         });
 
         if (originalType === 'docx') {
-          const reconstructedDocx = await reconstructDocx(filePath, translatedChunks);
+          const reconstructedDocx = await reconstructDocx(tmpPathToClean ?? filePath, translatedChunks);
           translatedData[lang] = reconstructedDocx.toString('base64');
         } else if (originalType === 'pdf') {
           const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
@@ -259,6 +259,10 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
       success: false,
       error: message,
     };
+  } finally {
+    if (tmpPathToClean) {
+      await fs.promises.unlink(tmpPathToClean).catch(() => {});
+    }
   }
 });
 

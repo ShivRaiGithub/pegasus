@@ -166,7 +166,7 @@ function App() {
   return (
     <div className="min-h-screen bg-bg text-textPrimary">
       <Navbar
-        openFile={openFile}
+        openFile={currentScreen === 'home' ? null : openFile}
         selectedLanguage={selectedLanguage}
         onLanguageChange={handleLanguageChange}
         isDark={isDark}
@@ -202,7 +202,7 @@ function App() {
         />
       ) : null}
 
-      {currentScreen === 'convert' && openFile?.type === 'regular' ? (
+      {currentScreen === 'convert' && (openFile?.type === 'regular' || openFile?.type === 'pgs') ? (
         <ConvertFlow
           filePath={openFile.filePath}
           fileName={openFile.fileName}

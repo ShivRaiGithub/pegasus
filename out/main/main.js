@@ -270,6 +270,7 @@ ipcMain.handle("read-file", async (_, filePath) => extractText(filePath));
 ipcMain.handle("read-pgs-file", async (_, filePath) => readPgsFile(filePath));
 ipcMain.handle("convert-to-pgs", async (event, options) => {
   const { filePath, languages, apiKey, instructions, outputDir } = options;
+  let tmpPathToClean = null;
   try {
     let originalType;
     let originalBase64;
@@ -279,11 +280,9 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
       const pgsData = await readPgsFile(filePath);
       originalType = pgsData.originalType;
       originalBase64 = pgsData.files["original"];
-      const tmpPath = path.join(app.getPath("temp"), `pegasus_temp_${Date.now()}.${originalType}`);
-      await fs.promises.writeFile(tmpPath, Buffer.from(originalBase64, "base64"));
-      extractedContent = await extractText(tmpPath);
-      await fs.promises.unlink(tmpPath).catch(() => {
-      });
+      tmpPathToClean = path.join(app.getPath("temp"), `pegasus_temp_${Date.now()}.${originalType}`);
+      await fs.promises.writeFile(tmpPathToClean, Buffer.from(originalBase64, "base64"));
+      extractedContent = await extractText(tmpPathToClean);
       for (const lang of pgsData.availableLanguages) {
         if (lang !== "original" && typeof pgsData.files[lang] === "string") {
           translatedData[lang] = pgsData.files[lang];
@@ -328,7 +327,7 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
           total: languages.length
         });
         if (originalType === "docx") {
-          const reconstructedDocx = await reconstructDocx(filePath, translatedChunks);
+          const reconstructedDocx = await reconstructDocx(tmpPathToClean ?? filePath, translatedChunks);
           translatedData[lang] = reconstructedDocx.toString("base64");
         } else if (originalType === "pdf") {
           const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
@@ -378,6 +377,11 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
       success: false,
       error: message
     };
+  } finally {
+    if (tmpPathToClean) {
+      await fs.promises.unlink(tmpPathToClean).catch(() => {
+      });
+    }
   }
 });
 ipcMain.handle("get-api-key", () => store.get("apiKey", ""));
