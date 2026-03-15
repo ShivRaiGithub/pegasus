@@ -3,6 +3,7 @@ import { renderAsync } from 'docx-preview';
 import type { OpenFileState, PageTextMap } from '../types/pgs';
 import FallbackModal from './FallbackModal';
 import PDFViewer from './PDFViewer.tsx';
+import { appAsset } from '../utils/assets';
 
 interface ViewerProps {
   openFile: OpenFileState;
@@ -11,6 +12,20 @@ interface ViewerProps {
   onConvertToPgs: () => void;
   onSelectLanguage: (lang: string) => void;
 }
+
+const languageNameMap: Record<string, string> = {
+  original: 'Original',
+  en: 'English',
+  fr: 'French',
+  es: 'Spanish',
+  de: 'German',
+  hi: 'Hindi',
+  ar: 'Arabic',
+  ja: 'Japanese',
+  zh: 'Chinese',
+  pt: 'Portuguese',
+  it: 'Italian',
+};
 
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
   const binaryStr = atob(base64);
@@ -34,6 +49,26 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
   const fileType = openFile.type === 'pgs' ? openFile.pgsData?.originalType : openFile.extractedContent?.metadata.type;
   const availableLanguages = openFile.pgsData?.availableLanguages ?? [];
   const missingSelectedLanguage = isPgs && !availableLanguages.includes(selectedLanguage);
+  const passportLanguages = useMemo(() => {
+    const unique = new Set(availableLanguages);
+    const ordered = ['original', ...availableLanguages.filter((lang) => lang !== 'original')];
+    return ordered.filter((lang) => unique.has(lang));
+  }, [availableLanguages]);
+  const languageCount = passportLanguages.filter((lang) => lang !== 'original').length;
+  const createdAtLabel = useMemo(() => {
+    if (!openFile.pgsData?.createdAt) {
+      return 'Created recently';
+    }
+    const date = new Date(openFile.pgsData.createdAt);
+    if (Number.isNaN(date.getTime())) {
+      return 'Created recently';
+    }
+    return `Created ${date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })}`;
+  }, [openFile.pgsData?.createdAt]);
 
   const selectedPgsPayload = useMemo(() => {
     if (!isPgs || !openFile.pgsData || missingSelectedLanguage) {
@@ -339,14 +374,57 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
   return (
     <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-6">
       {openFile.type === 'regular' ? (
-        <div className="mb-4 flex items-center justify-end">
+        <div className="-mx-6 mb-4 flex items-center justify-end border-b border-border bg-surface px-6 py-3">
           <button
             type="button"
             onClick={onConvertToPgs}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accentHover"
           >
-            Convert to .pgs
+            Create Language Passport
           </button>
+        </div>
+      ) : null}
+
+      {openFile.type === 'pgs' ? (
+        <div className="mb-4 space-y-3">
+          <div className="rounded-xl border border-border bg-surface px-6 py-7 text-center shadow-sm">
+            <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight">
+              <img src={appAsset('/pegasusIcon.svg')} alt="Pegasus icon" className="h-7 w-7" />
+            </div>
+            <h2 className="text-xl font-semibold text-textPrimary">{openFile.fileName}</h2>
+            <p className="mt-1 text-xs text-textTertiary">.pgs Language Passport</p>
+            <div className="mx-auto my-4 h-px w-24 bg-border" />
+            <p className="text-sm text-textSecondary">
+              {languageCount} languages · {createdAtLabel}
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {passportLanguages.map((lang) => {
+                const selected = selectedLanguage === lang;
+                return (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => onSelectLanguage(lang)}
+                    className={`rounded-xl border px-4 py-4 text-center transition ${
+                      selected
+                        ? 'border-accent bg-accent text-white'
+                        : 'border-border bg-white text-textPrimary hover:border-accent hover:bg-accentLight dark:bg-bg'
+                    }`}
+                  >
+                    <p className="text-sm font-medium">{languageNameMap[lang] ?? lang.toUpperCase()}</p>
+                    <p className={`mt-1 text-xs ${selected ? 'text-white/80' : 'text-textSecondary'}`}>
+                      Open
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800 dark:border-sky-900/50 dark:bg-sky-900/20 dark:text-sky-300">
+            This file is a Language Passport. Select a language card to view translated content.
+          </div>
         </div>
       ) : null}
 
@@ -406,7 +484,6 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
           onTranslateNow={onConvertToPgs}
           onSelectLanguage={onSelectLanguage}
           onViewOriginal={() => onSelectLanguage('original')}
-          isDark={isDark}
         />
       ) : null}
     </section>

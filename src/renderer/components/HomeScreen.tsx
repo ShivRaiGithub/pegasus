@@ -1,19 +1,37 @@
-import { useEffect, useMemo, useState } from 'react';
+import { appAsset } from '../utils/assets';
 
 interface HomeScreenProps {
   onOpenFile: () => void;
   onOpenPgs: () => void;
   onOpenRecent: (filePath: string) => void;
-  isDark: boolean;
+  selectedLanguage: string;
+  onLanguageChange: (lang: string) => void;
   preloadError: string | null;
   recentFiles: string[];
+  mode: 'home' | 'recent';
 }
+
+const languageLabelMap: Record<string, string> = {
+  en: 'English',
+  fr: 'French',
+  es: 'Spanish',
+  de: 'German',
+  hi: 'Hindi',
+  ar: 'Arabic',
+  ja: 'Japanese',
+  zh: 'Chinese',
+  pt: 'Portuguese',
+  it: 'Italian',
+};
+
+const uiLanguageOptions = ['en', 'fr', 'es', 'de', 'hi', 'ar', 'ja', 'zh', 'pt', 'it'];
 
 function fileTypeLabel(filePath: string): string {
   const ext = filePath.split('.').pop()?.toLowerCase();
   if (ext === 'pgs') return 'PGS';
   if (ext === 'docx') return 'DOCX';
   if (ext === 'txt') return 'TXT';
+  if (ext === 'pdf') return 'PDF';
   return 'FILE';
 }
 
@@ -22,61 +40,111 @@ function fileName(filePath: string): string {
   return parts[parts.length - 1];
 }
 
-function HomeScreen({ onOpenFile, onOpenPgs, onOpenRecent, preloadError, recentFiles }: HomeScreenProps) {
+function badgeClass(filePath: string): string {
+  const ext = filePath.split('.').pop()?.toLowerCase();
+  if (ext === 'docx') return 'pegasus-badge-docx';
+  if (ext === 'txt') return 'pegasus-badge-txt';
+  if (ext === 'pdf') return 'pegasus-badge-pdf';
+  if (ext === 'pgs') return 'pegasus-badge-pgs';
+  return 'pegasus-badge-txt';
+}
 
-  const hasRecent = useMemo(() => recentFiles.length > 0, [recentFiles]);
+function prettyDate(value: string): string {
+  return new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function HomeScreen({
+  onOpenFile,
+  onOpenPgs,
+  onOpenRecent,
+  selectedLanguage,
+  onLanguageChange,
+  preloadError,
+  recentFiles,
+  mode,
+}: HomeScreenProps) {
+  const showHomeHero = mode === 'home';
+  const hasRecent = recentFiles.length > 0;
+  const selectedHomeLanguage = selectedLanguage === 'original' ? 'en' : selectedLanguage;
 
   return (
-    <main className="mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-5xl flex-col items-center px-6 py-10">
-      <section className="mt-8 flex w-full max-w-3xl flex-col items-center rounded-2xl border border-border bg-surface px-6 py-10 text-center">
-        <div className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full border border-border bg-bg">
-          <svg viewBox="0 0 24 24" className="h-12 w-12 text-accent" fill="currentColor" aria-hidden="true">
-            <path d="M12 3.5c-2.9 0-5.7 1.17-7.78 3.26a1 1 0 0 0 1.41 1.41A9 9 0 0 1 12 5.5a1 1 0 1 0 0-2Zm-8.22 7.26A10.98 10.98 0 0 0 1 18.5a1 1 0 1 0 2 0 9 9 0 0 1 2.28-6.02 1 1 0 1 0-1.5-1.72Zm7.72-1.26a6.5 6.5 0 0 0-6.5 6.5 1 1 0 1 0 2 0 4.5 4.5 0 1 1 9 0v3a2.5 2.5 0 1 0 2-2.45V16a6.5 6.5 0 0 0-6.5-6.5Zm6.5 11.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1Z" />
-          </svg>
-        </div>
-        <h1 className="text-3xl font-semibold text-textPrimary">Pegasus</h1>
-        <p className="mt-2 text-textSecondary">Your documents, every language</p>
-
-        {preloadError ? (
-          <div className="mt-5 w-full rounded-md border border-error/40 bg-error/10 px-4 py-3 text-sm text-error">
-            {preloadError}
+    <main className="mx-auto w-full max-w-6xl px-8 py-10">
+      {showHomeHero ? (
+        <section className="mx-auto mt-8 flex w-full max-w-[520px] flex-col items-center rounded-xl border border-border bg-surface px-8 py-10 text-center shadow-sm">
+          <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight">
+            <img src={appAsset('/pegasusIcon.svg')} alt="Pegasus icon" className="h-7 w-7" />
           </div>
-        ) : null}
+          <h1 className="text-[26px] font-bold tracking-tight text-textPrimary">Pegasus</h1>
+          <p className="mt-2 text-sm text-textSecondary">Your document&apos;s Language Passport</p>
 
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={onOpenFile}
-            className="rounded-md bg-accent px-5 py-2.5 font-medium text-white transition hover:opacity-90"
-          >
-            Open Document
-          </button>
-          <button
-            type="button"
-            onClick={onOpenPgs}
-            className="rounded-md border border-border bg-bg px-5 py-2.5 font-medium text-textPrimary transition hover:border-accent"
-          >
-            Open .pgs file
-          </button>
-        </div>
-        <p className="mt-4 text-xs text-textSecondary">Note: Supports only TXT and DOCX (Word) for conversion</p>
-      </section>
+          <div className="mt-5 w-full text-left">
+            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary">Language</label>
+            <select
+              value={selectedHomeLanguage}
+              onChange={(event) => onLanguageChange(event.target.value)}
+              className="h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
+            >
+              {uiLanguageOptions.map((lang) => (
+                <option key={lang} value={lang}>
+                  {languageLabelMap[lang] ?? lang.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <section className="mt-8 w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
-        <h2 className="mb-4 text-lg font-semibold text-textPrimary">Recent files</h2>
-        {!hasRecent ? <p className="text-sm text-textSecondary">No recent files</p> : null}
-        <div className="space-y-2">
-          {recentFiles.map((filePath) => (
+          {preloadError ? (
+            <div className="mt-5 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
+              {preloadError}
+            </div>
+          ) : null}
+
+          <div className="mt-7 w-full space-y-2">
+            <button
+              type="button"
+              onClick={onOpenFile}
+              className="w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover"
+            >
+              Open Document
+            </button>
+            <button
+              type="button"
+              onClick={onOpenPgs}
+              className="w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface"
+            >
+              Open .pgs file
+            </button>
+          </div>
+
+          <p className="mt-4 text-xs text-textTertiary">Supports DOCX, TXT, PDF, PPTX</p>
+        </section>
+      ) : null}
+
+      <section className={`mx-auto w-full max-w-[760px] ${showHomeHero ? 'mt-8' : 'mt-4'}`}>
+        <p className="pegasus-section-label mb-3">Recent Files</p>
+        <div className="rounded-xl border border-border bg-surface">
+          {!hasRecent ? <p className="px-4 py-8 text-center text-sm text-textSecondary">No recent files yet</p> : null}
+
+          {recentFiles.map((filePath, index) => (
             <button
               key={filePath}
               type="button"
               onClick={() => onOpenRecent(filePath)}
-              className="flex w-full items-center justify-between rounded-md border border-border bg-bg px-3 py-2 text-left transition hover:border-accent"
+              className={`flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-cardHover ${
+                index < recentFiles.length - 1 ? 'border-b border-border' : ''
+              }`}
             >
-              <span className="truncate text-sm text-textPrimary">{fileName(filePath)}</span>
-              <span className="rounded bg-surface px-2 py-0.5 text-xs uppercase text-textSecondary">
-                {fileTypeLabel(filePath)}
-              </span>
+              <div className="flex min-w-0 items-center gap-3">
+                <span className={`pegasus-file-badge ${badgeClass(filePath)}`}>{fileTypeLabel(filePath)}</span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-textPrimary">{fileName(filePath)}</p>
+                  <p className="truncate text-xs text-textSecondary">{filePath}</p>
+                </div>
+              </div>
+              <span className="text-xs text-textTertiary">{prettyDate(filePath)}</span>
             </button>
           ))}
         </div>

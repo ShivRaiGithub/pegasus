@@ -15923,7 +15923,7 @@ function ThemeToggle({
   } = useTranslation(["734cdc15fbf0", "df9518920f1e"]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onToggle, className: "inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface text-textPrimary transition hover:border-accent", "aria-label": t("734cdc15fbf0", "Toggle theme"), title: t("df9518920f1e", "Toggle theme"), children: isDark ? /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-5 w-5", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M21.75 15.5A9.75 9.75 0 1 1 8.5 2.25a8 8 0 1 0 13.25 13.25Z" }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-5 w-5", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 4a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1ZM12 17a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM5 11a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2h1ZM20 11a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2h1ZM6.222 6.222a1 1 0 0 1 1.414 0l.707.707A1 1 0 1 1 6.93 8.343l-.707-.707a1 1 0 0 1 0-1.414ZM17.07 17.07a1 1 0 0 1 1.414 0l.707.707a1 1 0 1 1-1.414 1.414l-.707-.707a1 1 0 0 1 0-1.414ZM8.343 17.07a1 1 0 0 1 0 1.414l-.707.707a1 1 0 1 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0ZM19.192 5.101a1 1 0 0 1 0 1.414l-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0ZM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" }) }) });
 }
-const languageLabelMap = {
+const languageLabelMap$1 = {
   original: "Original",
   en: "English",
   fr: "French",
@@ -15936,7 +15936,7 @@ const languageLabelMap = {
   pt: "Portuguese",
   it: "Italian"
 };
-const uiLanguageOptions = ["en", "fr", "es", "de", "hi", "ar", "ja", "zh", "pt", "it"];
+const uiLanguageOptions$1 = ["en", "fr", "es", "de", "hi", "ar", "ja", "zh", "pt", "it"];
 function truncateFilename(name) {
   if (name.length <= 40) {
     return name;
@@ -15949,68 +15949,122 @@ function Navbar({
   onLanguageChange,
   isDark,
   onToggleTheme,
-  onOpenSettings,
-  onGoHome
+  mode = "viewer"
 }) {
-  const {
-    t
-  } = useTranslation(["f53e770487b5", "dd1cb5c41552", "9484acade044", "c4245b27467c", "693177c8db3f", "7e76edcb7a70"]);
-  const languageOptions2 = openFile?.type === "pgs" ? ["original", ...uiLanguageOptions] : uiLanguageOptions;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "sticky top-0 z-40 h-14 border-b border-border bg-bg/90 px-4 backdrop-blur", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto flex h-full max-w-[1400px] items-center justify-between gap-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: "flex items-center gap-2 text-textPrimary", onClick: onGoHome, title: t("f53e770487b5", "Go home"), children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6 text-accent", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 3.5c-2.9 0-5.7 1.17-7.78 3.26a1 1 0 0 0 1.41 1.41A9 9 0 0 1 12 5.5a1 1 0 1 0 0-2Zm-8.22 7.26A10.98 10.98 0 0 0 1 18.5a1 1 0 1 0 2 0 9 9 0 0 1 2.28-6.02 1 1 0 1 0-1.5-1.72Zm7.72-1.26a6.5 6.5 0 0 0-6.5 6.5 1 1 0 1 0 2 0 4.5 4.5 0 1 1 9 0v3a2.5 2.5 0 1 0 2-2.45V16a6.5 6.5 0 0 0-6.5-6.5Zm6.5 11.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1Z" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg font-semibold", children: t("dd1cb5c41552", "Pegasus") })
-    ] }),
-    openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onGoHome, className: "rounded border border-border bg-bg px-2 py-1 text-sm text-textSecondary transition hover:border-accent hover:text-textPrimary", title: t("9484acade044", "Go back to Home"), children: t("c4245b27467c", "← Back") }) : null,
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-w-0 flex-1 text-center text-sm text-textSecondary", children: openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: truncateFilename(openFile.fileName) }) : null }),
+  const languageOptions2 = openFile?.type === "pgs" ? ["original", ...uiLanguageOptions$1] : uiLanguageOptions$1;
+  const topLabel = mode === "convert" ? "Convert Document" : openFile?.fileName ?? "";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "border-b border-border bg-surface", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex h-[52px] items-center justify-between px-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex min-w-0 items-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate font-mono text-[13px] text-textSecondary", children: truncateFilename(topLabel) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: selectedLanguage, onChange: (event) => onLanguageChange(event.target.value), className: "h-9 rounded-md border border-border bg-surface px-2 text-sm text-textPrimary", children: languageOptions2.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap[lang] ?? lang.toUpperCase() }, lang)) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, { isDark, onToggle: onToggleTheme }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenSettings, className: "inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface text-textPrimary transition hover:border-accent", "aria-label": t("693177c8db3f", "Open settings"), title: t("7e76edcb7a70", "Settings"), children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-5 w-5", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M11.09 2.65c.58-1.16 2.24-1.16 2.82 0l.36.73a1.6 1.6 0 0 0 2.03.78l.77-.3c1.22-.47 2.4.7 1.93 1.92l-.3.77a1.6 1.6 0 0 0 .79 2.04l.72.36c1.16.58 1.16 2.24 0 2.82l-.72.36a1.6 1.6 0 0 0-.79 2.03l.3.77c.47 1.22-.7 2.4-1.93 1.93l-.77-.3a1.6 1.6 0 0 0-2.03.79l-.36.72c-.58 1.16-2.24 1.16-2.82 0l-.36-.72a1.6 1.6 0 0 0-2.03-.79l-.77.3c-1.22.47-2.4-.7-1.92-1.93l.29-.77a1.6 1.6 0 0 0-.78-2.03l-.73-.36c-1.16-.58-1.16-2.24 0-2.82l.73-.36a1.6 1.6 0 0 0 .78-2.04l-.3-.77C4.53 4.56 5.71 3.4 6.93 3.86l.77.3a1.6 1.6 0 0 0 2.03-.78l.36-.73ZM12.5 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" }) }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "select",
+        {
+          value: selectedLanguage,
+          onChange: (event) => onLanguageChange(event.target.value),
+          className: "h-8 rounded-md border border-border bg-white px-2 text-xs text-textPrimary dark:bg-surface",
+          children: languageOptions2.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap$1[lang] ?? lang.toUpperCase() }, lang))
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, { isDark, onToggle: onToggleTheme })
     ] })
   ] }) });
 }
+function appAsset(path) {
+  if (!path.startsWith("/")) {
+    return path;
+  }
+  if (window.location.protocol !== "file:") {
+    return path;
+  }
+  return new URL(`.${path}`, window.location.href).toString();
+}
+const languageLabelMap = {
+  en: "English",
+  fr: "French",
+  es: "Spanish",
+  de: "German",
+  hi: "Hindi",
+  ar: "Arabic",
+  ja: "Japanese",
+  zh: "Chinese",
+  pt: "Portuguese",
+  it: "Italian"
+};
+const uiLanguageOptions = ["en", "fr", "es", "de", "hi", "ar", "ja", "zh", "pt", "it"];
 function fileTypeLabel(filePath) {
   const ext = filePath.split(".").pop()?.toLowerCase();
   if (ext === "pgs") return "PGS";
   if (ext === "docx") return "DOCX";
   if (ext === "txt") return "TXT";
+  if (ext === "pdf") return "PDF";
   return "FILE";
 }
 function fileName(filePath) {
   const parts = filePath.split(/[\\/]/);
   return parts[parts.length - 1];
 }
+function badgeClass(filePath) {
+  const ext = filePath.split(".").pop()?.toLowerCase();
+  if (ext === "docx") return "pegasus-badge-docx";
+  if (ext === "txt") return "pegasus-badge-txt";
+  if (ext === "pdf") return "pegasus-badge-pdf";
+  if (ext === "pgs") return "pegasus-badge-pgs";
+  return "pegasus-badge-txt";
+}
+function prettyDate(value) {
+  return (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
 function HomeScreen({
   onOpenFile,
   onOpenPgs,
   onOpenRecent,
+  selectedLanguage,
+  onLanguageChange,
   preloadError,
-  recentFiles
+  recentFiles,
+  mode
 }) {
   const {
     t
-  } = useTranslation(["6145d7d8df9b", "f3db2e34c276", "69a457b8223c", "f147c441b753", "56358f44b552", "471f9d34fa65", "efe8806f75b8"]);
-  const hasRecent = reactExports.useMemo(() => recentFiles.length > 0, [recentFiles]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "mx-auto flex min-h-[calc(100vh-56px)] w-full max-w-5xl flex-col items-center px-6 py-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mt-8 flex w-full max-w-3xl flex-col items-center rounded-2xl border border-border bg-surface px-6 py-10 text-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full border border-border bg-bg", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-12 w-12 text-accent", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 3.5c-2.9 0-5.7 1.17-7.78 3.26a1 1 0 0 0 1.41 1.41A9 9 0 0 1 12 5.5a1 1 0 1 0 0-2Zm-8.22 7.26A10.98 10.98 0 0 0 1 18.5a1 1 0 1 0 2 0 9 9 0 0 1 2.28-6.02 1 1 0 1 0-1.5-1.72Zm7.72-1.26a6.5 6.5 0 0 0-6.5 6.5 1 1 0 1 0 2 0 4.5 4.5 0 1 1 9 0v3a2.5 2.5 0 1 0 2-2.45V16a6.5 6.5 0 0 0-6.5-6.5Zm6.5 11.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1Z" }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-semibold text-textPrimary", children: t("6145d7d8df9b", "Pegasus") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-textSecondary", children: t("f3db2e34c276", "Your documents, every language") }),
-      preloadError ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5 w-full rounded-md border border-error/40 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-7 flex flex-wrap justify-center gap-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenFile, className: "rounded-md bg-accent px-5 py-2.5 font-medium text-white transition hover:opacity-90", children: t("69a457b8223c", "Open Document") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenPgs, className: "rounded-md border border-border bg-bg px-5 py-2.5 font-medium text-textPrimary transition hover:border-accent", children: t("f147c441b753", "Open .pgs file") })
+  } = useTranslation(["fdc61ffae7b3", "6145d7d8df9b", "e8ed71b45648", "7abbc4be4f8f", "69a457b8223c", "f147c441b753", "2afff3c63fea", "cad60271ef78", "dd703bd340fc"]);
+  const showHomeHero = mode === "home";
+  const hasRecent = recentFiles.length > 0;
+  const selectedHomeLanguage = selectedLanguage === "original" ? "en" : selectedLanguage;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "mx-auto w-full max-w-6xl px-8 py-10", children: [
+    showHomeHero ? /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto mt-8 flex w-full max-w-[520px] flex-col items-center rounded-xl border border-border bg-surface px-8 py-10 text-center shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: t("fdc61ffae7b3", "Pegasus icon"), className: "h-7 w-7" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-[26px] font-bold tracking-tight text-textPrimary", children: t("6145d7d8df9b", "Pegasus") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-textSecondary", children: t("e8ed71b45648", "Your document's Language Passport") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-5 w-full text-left", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary", children: t("7abbc4be4f8f", "Language") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: selectedHomeLanguage, onChange: (event) => onLanguageChange(event.target.value), className: "h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: uiLanguageOptions.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap[lang] ?? lang.toUpperCase() }, lang)) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textSecondary", children: t("56358f44b552", "Note: Supports only TXT and DOCX (Word) for conversion") })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mt-8 w-full max-w-3xl rounded-2xl border border-border bg-surface p-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "mb-4 text-lg font-semibold text-textPrimary", children: t("471f9d34fa65", "Recent files") }),
-      !hasRecent ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: t("efe8806f75b8", "No recent files") }) : null,
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: recentFiles.map((filePath) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => onOpenRecent(filePath), className: "flex w-full items-center justify-between rounded-md border border-border bg-bg px-3 py-2 text-left transition hover:border-accent", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate text-sm text-textPrimary", children: fileName(filePath) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rounded bg-surface px-2 py-0.5 text-xs uppercase text-textSecondary", children: fileTypeLabel(filePath) })
-      ] }, filePath)) })
+      preloadError ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-7 w-full space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenFile, className: "w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover", children: t("69a457b8223c", "Open Document") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenPgs, className: "w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface", children: t("f147c441b753", "Open .pgs file") })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textTertiary", children: t("2afff3c63fea", "Supports DOCX, TXT, PDF, PPTX") })
+    ] }) : null,
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: `mx-auto w-full max-w-[760px] ${showHomeHero ? "mt-8" : "mt-4"}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "pegasus-section-label mb-3", children: t("cad60271ef78", "Recent Files") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface", children: [
+        !hasRecent ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "px-4 py-8 text-center text-sm text-textSecondary", children: t("dd703bd340fc", "No recent files yet") }) : null,
+        recentFiles.map((filePath, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => onOpenRecent(filePath), className: `flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-cardHover ${index < recentFiles.length - 1 ? "border-b border-border" : ""}`, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-w-0 items-center gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `pegasus-file-badge ${badgeClass(filePath)}`, children: fileTypeLabel(filePath) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "truncate text-sm font-medium text-textPrimary", children: fileName(filePath) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "truncate text-xs text-textSecondary", children: filePath })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-textTertiary", children: prettyDate() })
+        ] }, filePath))
+      ] })
     ] })
   ] });
 }
@@ -22318,7 +22372,7 @@ async function renderAsync(data, bodyContainer, styleContainer, userOptions) {
   await renderDocument(doc, bodyContainer, styleContainer, userOptions);
   return doc;
 }
-const languageNameMap = {
+const languageNameMap$1 = {
   original: "Original",
   en: "English",
   fr: "French",
@@ -22340,37 +22394,33 @@ function FallbackModal({
 }) {
   const {
     t
-  } = useTranslation(["3e97422b017d", "232bb729aa7e", "0036d65eeebc", "201fa450ee15", "0036d65eeebc", "75739d9297b5", "e924840e844d", "6013634d8e81", "7a038620ddbd", "6013634d8e81"]);
-  const name = languageNameMap[missingLanguage] ?? missingLanguage.toUpperCase();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-3xl rounded-2xl border border-border bg-surface p-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-textPrimary", children: t("3e97422b017d", "Not available in {name}", {
+  } = useTranslation(["3c8c7e60b849", "3e97422b017d", "232bb729aa7e", "0036d65eeebc", "888123ad51c6", "db1d1668bd58", "bc43c86677b0", "d0198478685a"]);
+  const name = languageNameMap$1[missingLanguage] ?? missingLanguage.toUpperCase();
+  const alternateLanguages = availableLanguages;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[460px] rounded-2xl border border-border bg-surface p-7 shadow-[0_20px_60px_rgba(0,0,0,0.15)]", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex h-10 w-10 items-center justify-center rounded-xl bg-warningLight text-lg text-warning", children: t("3c8c7e60b849", "⚠") }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-center text-[34px] font-semibold leading-none text-textPrimary", children: t("3e97422b017d", "Not available in {name}", {
       name
     }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("232bb729aa7e", "This .pgs file doesn''t include a {name} translation yet.", {
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-sm text-textSecondary", children: t("232bb729aa7e", "This .pgs file doesn''t include a {name} translation yet.", {
       name
     }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 grid gap-4 md:grid-cols-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 space-y-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onTranslateNow, className: "w-full rounded-xl bg-accent px-4 py-4 text-left text-white transition hover:bg-accentHover", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-semibold", children: t("0036d65eeebc", "Translate now") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { "aria-hidden": "true", children: t("888123ad51c6", "›") })
+      ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-bg p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 text-accent", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M11 2a1 1 0 0 1 .93 1.37L9.55 9H14a1 1 0 0 1 .8 1.6l-6 8A1 1 0 0 1 7 18l2.38-5H6a1 1 0 0 1-.9-1.44l5-9A1 1 0 0 1 11 2Z" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium text-textPrimary", children: t("0036d65eeebc", "Translate now") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("201fa450ee15", "Add {name} to this file (requires API key)", {
-          name
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 inline-flex items-center gap-2 text-sm font-medium text-textPrimary", children: t("db1d1668bd58", "<span0>🌐</span0> View in another language", {
+          span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-base text-textSecondary", children: chunks })
         }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onTranslateNow, className: "mt-3 w-full rounded-md bg-accent px-3 py-2 text-sm font-medium text-white", children: t("0036d65eeebc", "Translate now") })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-2", children: alternateLanguages.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onSelectLanguage(lang), className: "rounded-full border border-border bg-white px-3 py-1 text-xs font-medium text-textSecondary transition hover:border-accent hover:text-accent dark:bg-surface", children: languageNameMap$1[lang] ?? lang.toUpperCase() }, lang)) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-bg p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 text-accent", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm7.93 9h-3.1a15.3 15.3 0 0 0-1.48-5A8.03 8.03 0 0 1 19.93 11ZM12 4c.94 0 2.38 2.06 2.9 7H9.1C9.62 6.06 11.06 4 12 4ZM8.65 6a15.3 15.3 0 0 0-1.48 5h-3.1A8.03 8.03 0 0 1 8.65 6ZM4.07 13h3.1a15.3 15.3 0 0 0 1.48 5A8.03 8.03 0 0 1 4.07 13ZM12 20c-.94 0-2.38-2.06-2.9-7h5.8c-.52 4.94-1.96 7-2.9 7Zm3.35-2a15.3 15.3 0 0 0 1.48-5h3.1a8.03 8.03 0 0 1-4.58 5Z" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium text-textPrimary", children: t("75739d9297b5", "View in another language") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("e924840e844d", "Choose one of the available versions") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3 flex flex-wrap gap-2", children: availableLanguages.filter((l) => l !== "original").map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onSelectLanguage(lang), className: "rounded-md border border-border px-2 py-1 text-xs text-textPrimary hover:border-accent", children: languageNameMap[lang] ?? lang.toUpperCase() }, lang)) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-bg p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 text-accent", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", className: "h-6 w-6", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M7 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5L13.5 3H7Zm6 1.5L17.5 9H13V4.5Z" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "font-medium text-textPrimary", children: t("6013634d8e81", "View original") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("7a038620ddbd", "View the original untranslated document") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "mt-3 w-full rounded-md border border-border px-3 py-2 text-sm font-medium text-textPrimary hover:border-accent", children: t("6013634d8e81", "View original") })
-      ] })
-    ] })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "flex w-full items-center gap-2 rounded-xl border border-border bg-bg px-4 py-3 text-sm font-medium text-textPrimary transition hover:border-accent", children: t("bc43c86677b0", "<span0>📄</span0> View original", {
+        span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-base text-textSecondary", children: chunks })
+      }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "mt-5 w-full text-center text-sm text-textTertiary transition hover:text-textSecondary", children: t("d0198478685a", "Dismiss") })
   ] }) });
 }
 var __webpack_modules__ = {
@@ -52963,6 +53013,19 @@ function PDFViewer({ pdfBase64, translatedPageTextMap, isDark }) {
     error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-error", children: error })
   ] });
 }
+const languageNameMap = {
+  original: "Original",
+  en: "English",
+  fr: "French",
+  es: "Spanish",
+  de: "German",
+  hi: "Hindi",
+  ar: "Arabic",
+  ja: "Japanese",
+  zh: "Chinese",
+  pt: "Portuguese",
+  it: "Italian"
+};
 function base64ToArrayBuffer(base64) {
   const binaryStr = atob(base64);
   const bytes = new Uint8Array(binaryStr.length);
@@ -52980,7 +53043,7 @@ function Viewer({
 }) {
   const {
     t
-  } = useTranslation(["aaa63dceae98"]);
+  } = useTranslation(["99bc616b9cfc", "1994ce7a2c06", "888b35f14321", "dad7754f1c72", "e363b2063893"]);
   const [isLoading, setIsLoading] = reactExports.useState(false);
   const [errorMessage, setErrorMessage] = reactExports.useState(null);
   const docxOriginalLayerRef = reactExports.useRef(null);
@@ -52990,6 +53053,26 @@ function Viewer({
   const fileType = openFile.type === "pgs" ? openFile.pgsData?.originalType : openFile.extractedContent?.metadata.type;
   const availableLanguages = openFile.pgsData?.availableLanguages ?? [];
   const missingSelectedLanguage = isPgs && !availableLanguages.includes(selectedLanguage);
+  const passportLanguages = reactExports.useMemo(() => {
+    const unique = new Set(availableLanguages);
+    const ordered = ["original", ...availableLanguages.filter((lang) => lang !== "original")];
+    return ordered.filter((lang) => unique.has(lang));
+  }, [availableLanguages]);
+  const languageCount = passportLanguages.filter((lang) => lang !== "original").length;
+  const createdAtLabel = reactExports.useMemo(() => {
+    if (!openFile.pgsData?.createdAt) {
+      return "Created recently";
+    }
+    const date = new Date(openFile.pgsData.createdAt);
+    if (Number.isNaN(date.getTime())) {
+      return "Created recently";
+    }
+    return `Created ${date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    })}`;
+  }, [openFile.pgsData?.createdAt]);
   const selectedPgsPayload = reactExports.useMemo(() => {
     if (!isPgs || !openFile.pgsData || missingSelectedLanguage) {
       return "";
@@ -53225,7 +53308,27 @@ function Viewer({
     }
   }, [fileType]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto w-full max-w-6xl px-6 pb-12 pt-6", children: [
-    openFile.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 flex items-center justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onConvertToPgs, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white", children: t("aaa63dceae98", "Convert to .pgs") }) }) : null,
+    openFile.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "-mx-6 mb-4 flex items-center justify-end border-b border-border bg-surface px-6 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onConvertToPgs, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accentHover", children: t("99bc616b9cfc", "Create Language Passport") }) }) : null,
+    openFile.type === "pgs" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-4 space-y-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface px-6 py-7 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: t("1994ce7a2c06", "Pegasus icon"), className: "h-7 w-7" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-textPrimary", children: openFile.fileName }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-textTertiary", children: t("888b35f14321", ".pgs Language Passport") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto my-4 h-px w-24 bg-border" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: t("dad7754f1c72", "{languageCount} languages · {createdAtLabel}", {
+          languageCount,
+          createdAtLabel
+        }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4", children: passportLanguages.map((lang) => {
+          const selected = selectedLanguage === lang;
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => onSelectLanguage(lang), className: `rounded-xl border px-4 py-4 text-center transition ${selected ? "border-accent bg-accent text-white" : "border-border bg-white text-textPrimary hover:border-accent hover:bg-accentLight dark:bg-bg"}`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium", children: languageNameMap[lang] ?? lang.toUpperCase() }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `mt-1 text-xs ${selected ? "text-white/80" : "text-textSecondary"}`, children: "Open" })
+          ] }, lang);
+        }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800 dark:border-sky-900/50 dark:bg-sky-900/20 dark:text-sky-300", children: t("e363b2063893", "This file is a Language Passport. Select a language card to view translated content.") })
+    ] }) : null,
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-2xl border border-border bg-surface", children: missingSelectedLanguage ? null : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-[480px] p-6", children: [
       fileType === "docx" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
         position: "relative"
@@ -53250,40 +53353,66 @@ function Viewer({
       fileType === "pdf" ? /* @__PURE__ */ jsxRuntimeExports.jsx(PDFViewer, { pdfBase64, translatedPageTextMap, isDark }) : null,
       fileType === "txt" ? /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "mx-auto max-w-[800px] whitespace-pre-wrap rounded-md bg-bg px-6 py-6 font-mono text-base leading-8 text-textPrimary", children: txtContent }) : null
     ] }) }),
-    missingSelectedLanguage && openFile.type === "pgs" ? /* @__PURE__ */ jsxRuntimeExports.jsx(FallbackModal, { missingLanguage: selectedLanguage, availableLanguages, onTranslateNow: onConvertToPgs, onSelectLanguage, onViewOriginal: () => onSelectLanguage("original"), isDark }) : null
+    missingSelectedLanguage && openFile.type === "pgs" ? /* @__PURE__ */ jsxRuntimeExports.jsx(FallbackModal, { missingLanguage: selectedLanguage, availableLanguages, onTranslateNow: onConvertToPgs, onSelectLanguage, onViewOriginal: () => onSelectLanguage("original") }) : null
   ] });
 }
 const languageOptions = [{
   code: "en",
-  name: "English"
+  name: "English",
+  label: "EN-US",
+  short: "EN"
 }, {
   code: "fr",
-  name: "French"
+  name: "French",
+  label: "FR-FR",
+  short: "FR"
 }, {
   code: "es",
-  name: "Spanish"
+  name: "Spanish",
+  label: "ES-ES",
+  short: "ES"
 }, {
   code: "de",
-  name: "German"
+  name: "German",
+  label: "DE-DE",
+  short: "DE"
 }, {
   code: "hi",
-  name: "Hindi"
+  name: "Hindi",
+  label: "HI-IN",
+  short: "HI"
 }, {
   code: "ar",
-  name: "Arabic"
+  name: "Arabic",
+  label: "AR-SA",
+  short: "AR"
 }, {
   code: "ja",
-  name: "Japanese"
+  name: "Japanese",
+  label: "JA-JP",
+  short: "JA"
 }, {
   code: "zh",
-  name: "Chinese"
+  name: "Chinese",
+  label: "ZH-CN",
+  short: "ZH"
 }, {
   code: "pt",
-  name: "Portuguese"
+  name: "Portuguese",
+  label: "PT-BR",
+  short: "PT"
 }, {
   code: "it",
-  name: "Italian"
+  name: "Italian",
+  label: "IT-IT",
+  short: "IT"
 }];
+const statusStyleMap = {
+  waiting: "bg-bg text-textSecondary",
+  translating: "bg-accentLight text-accent",
+  done: "bg-successLight text-success",
+  error: "bg-error/10 text-error"
+};
 function ConvertFlow({
   filePath,
   fileName: fileName2,
@@ -53292,7 +53421,7 @@ function ConvertFlow({
 }) {
   const {
     t
-  } = useTranslation(["42aff551d181", "fea4677ebdde", "08a7070013b3", "53cbc78e34d8", "4de76ee708a8", "6eb94e81ba89", "e57cf7e69bef", "6ea02f08bc31", "cba5a612e465", "cedf8eff72a6", "8c7f5ef036df", "2328f924b34e", "6f242d1b96eb", "f56f5f608c2a"]);
+  } = useTranslation(["230dc62879b9", "344fcc886eba", "d3d7cf59c994", "08a7070013b3", "53cbc78e34d8", "4de76ee708a8", "6eb94e81ba89", "e57cf7e69bef", "6ea02f08bc31", "cba5a612e465", "e80cb97e0c2b", "37973249f8ca", "2328f924b34e", "be236e3834b4", "d2561aea2fc6", "f56f5f608c2a", "8feb12985aa0"]);
   const [step, setStep] = reactExports.useState(1);
   const [selectedLanguages, setSelectedLanguages] = reactExports.useState([]);
   const [apiKey, setApiKey] = reactExports.useState("");
@@ -53402,89 +53531,109 @@ function ConvertFlow({
       setErrorMessage(result.error ?? "Conversion failed.");
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto w-full max-w-5xl px-6 py-8", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-6 flex items-center gap-2 text-sm text-textSecondary", children: [1, 2, 3].map((value) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `rounded-full border px-3 py-1 ${step === value ? "border-accent text-accent" : "border-border"}`, children: value }, value)) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-border bg-surface p-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-textPrimary", children: t("42aff551d181", "Convert {fileName}", {
-        fileName: fileName2
-      }) }),
-      step === 1 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: toggleAll, className: "mb-4 rounded-md border border-border px-3 py-2 text-sm text-textPrimary", children: allSelected ? "Clear All" : "Select All" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-3 sm:grid-cols-2 md:grid-cols-3", children: languageOptions.map((language) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex cursor-pointer items-center gap-2 rounded-md border border-border bg-bg px-3 py-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: selectedLanguages.includes(language.code), onChange: () => toggleLanguage(language.code), className: "accent-accent" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm text-textPrimary", children: [
-            language.name,
-            " (",
-            language.code,
-            ")"
-          ] })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto w-full max-w-5xl px-8 py-8", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-5 rounded-lg border border-border bg-surface px-4 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-textPrimary", children: t("230dc62879b9", "New Conversion Project") }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-5 flex items-center gap-5 rounded-lg border border-border bg-surface px-4 py-3", children: [1, 2, 3].map((value) => {
+      const isActive = step === value;
+      const isDone = step > value;
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 text-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${isDone ? "bg-success text-white" : isActive ? "bg-accent text-white" : "border border-border text-textTertiary"}`, children: isDone ? "✓" : value }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${isActive ? "text-accent" : "text-textSecondary"} font-medium`, children: value === 1 ? "Languages" : value === 2 ? "Settings" : "Progress" })
+      ] }, value);
+    }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border-b border-border px-5 py-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-semibold text-textPrimary", children: step === 1 ? "Select Languages" : step === 2 ? "Configuration" : "Translating your document..." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: fileName2 })
+      ] }),
+      step === 1 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-5 py-5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-4 flex items-center justify-between", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: t("344fcc886eba", "Choose which languages you want to include in the passport.") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: toggleAll, className: "text-sm font-medium text-accent hover:underline", children: allSelected ? "Clear All" : "Select All" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-3 md:grid-cols-3", children: languageOptions.map((language) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: `cursor-pointer rounded-lg border px-3 py-3 transition ${selectedLanguages.includes(language.code) ? "border-accent bg-accentLight/40" : "border-border bg-white hover:bg-cardHover dark:bg-bg"}`, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", checked: selectedLanguages.includes(language.code), onChange: () => toggleLanguage(language.code), className: "sr-only" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex rounded-md border border-border bg-bg px-2 py-0.5 text-[10px] font-semibold text-textSecondary", children: language.short }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selectedLanguages.includes(language.code) ? "border-accent bg-accent text-white" : "border-border text-textTertiary"}`, children: "✓" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm font-semibold text-textPrimary", children: language.name }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: language.label })
         ] }, language.code)) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setStep(2), disabled: selectedLanguages.length === 0, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50", children: t("fea4677ebdde", "Next") }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 flex justify-end border-t border-border pt-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setStep(2), disabled: selectedLanguages.length === 0, className: "rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50", children: t("d3d7cf59c994", "Next →") }) })
       ] }) : null,
-      step === 2 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 space-y-5", children: [
+      step === 2 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-5 px-5 py-5", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm text-textSecondary", children: t("08a7070013b3", "API key") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm font-medium text-textPrimary", children: t("08a7070013b3", "API key") }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: showApiKey ? "text" : "password", value: apiKey, onChange: (event) => setApiKey(event.target.value), className: "w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowApiKey((value) => !value), className: "rounded-md border border-border px-3 py-2 text-sm text-textPrimary", children: showApiKey ? "Hide" : "Show" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: showApiKey ? "text" : "password", value: apiKey, onChange: (event) => setApiKey(event.target.value), className: "h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowApiKey((value) => !value), className: "h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: showApiKey ? "Hide" : "Show" })
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm text-textSecondary", children: t("53cbc78e34d8", "Instructions (optional)") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: instructions, onChange: (event) => setInstructions(event.target.value), placeholder: t("4de76ee708a8", "e.g. Do not translate proper nouns, keep brand names in English"), className: "h-28 w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm font-medium text-textPrimary", children: t("53cbc78e34d8", "Instructions (optional)") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: instructions, onChange: (event) => setInstructions(event.target.value), placeholder: t("4de76ee708a8", "e.g. Do not translate proper nouns, keep brand names in English"), className: "h-28 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm text-textSecondary", children: t("6eb94e81ba89", "Output folder") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm font-medium text-textPrimary", children: t("6eb94e81ba89", "Output folder") }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { readOnly: true, value: outputDir, placeholder: t("e57cf7e69bef", "Choose folder"), className: "w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: chooseFolder, className: "rounded-md border border-border px-3 py-2 text-sm text-textPrimary", children: t("6ea02f08bc31", "Browse") })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { readOnly: true, value: outputDir, placeholder: t("e57cf7e69bef", "Choose folder"), className: "h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: chooseFolder, className: "h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: t("6ea02f08bc31", "Browse") })
           ] })
         ] }),
         errorMessage ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-error", children: errorMessage }) : null,
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setStep(1), className: "rounded-md border border-border px-4 py-2 text-sm text-textPrimary", children: t("cba5a612e465", "Back") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: startTranslation, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white", children: t("cedf8eff72a6", "Translate") })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between border-t border-border pt-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setStep(1), className: "rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-textPrimary", children: t("cba5a612e465", "Back") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: startTranslation, className: "rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover", children: t("e80cb97e0c2b", "Create Language Passport") })
         ] })
       ] }) : null,
-      step === 3 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 space-y-4", children: [
-        languageOptions.filter((language) => selectedLanguages.includes(language.code)).map((language) => {
-          const entry = states[language.code];
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between rounded-md border border-border bg-bg px-3 py-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textPrimary", children: language.name }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs uppercase text-textSecondary", children: language.code })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `text-sm ${entry?.status === "done" ? "text-success" : entry?.status === "error" ? "text-error" : "text-textSecondary"}`, children: entry?.status ?? "waiting" })
-          ] }, language.code);
-        }),
+      step === 3 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 px-5 py-5", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-1 flex items-center justify-between text-xs text-textSecondary", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: t("8c7f5ef036df", "Overall progress") }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: t("2328f924b34e", "{overallProgress}%", {
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-1 flex items-center justify-between text-sm text-textSecondary", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: t("37973249f8ca", "Total completion") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-accent", children: t("2328f924b34e", "{overallProgress}%", {
               overallProgress
             }) })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-2 w-full overflow-hidden rounded bg-bg", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-full bg-accent transition-all", style: {
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-2 w-full overflow-hidden rounded-full bg-bg", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-full bg-accent transition-all", style: {
             width: `${overallProgress}%`
           } }) })
         ] }),
+        languageOptions.filter((language) => selectedLanguages.includes(language.code)).map((language) => {
+          const entry = states[language.code];
+          const status = entry?.status ?? "waiting";
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between rounded-lg border border-border bg-white px-4 py-3 dark:bg-bg", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex rounded-md border border-border bg-bg px-2 py-0.5 text-[10px] font-semibold text-textSecondary", children: language.short }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-textPrimary", children: language.name }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: language.label })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `rounded-full px-3 py-1 text-xs font-semibold uppercase ${statusStyleMap[status]}`, children: status })
+          ] }, language.code);
+        }),
         errorMessage ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-error", children: errorMessage }) : null,
-        !isRunning && resultPath ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onComplete(resultPath), className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white", children: t("6f242d1b96eb", "Open .pgs file") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onCancel, className: "rounded-md border border-border px-4 py-2 text-sm text-textPrimary", children: t("f56f5f608c2a", "Done") })
-        ] }) : null
+        !isRunning && resultPath ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-success/30 bg-success/10 px-4 py-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-success", children: t("be236e3834b4", "Language Passport created successfully.") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onComplete(resultPath), className: "rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white", children: t("d2561aea2fc6", "Open Passport") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onCancel, className: "rounded-lg border border-border px-4 py-2 text-sm font-medium text-textPrimary", children: t("f56f5f608c2a", "Done") })
+          ] })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center border-t border-border pt-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onCancel, className: "text-sm text-textSecondary hover:text-textPrimary", children: t("8feb12985aa0", "Cancel operation") }) })
       ] }) : null
     ] })
   ] });
 }
 function SettingsPanel({
-  onClose,
+  isDark,
   onSavedApiKey,
-  onClearedRecent
+  onClearedRecent,
+  onToggleTheme
 }) {
   const {
     t
-  } = useTranslation(["b7f547de09f9", "9fab1eac918a", "7c9819ad8740", "e86cd4944789", "7dc6c0708504", "970d062f0f85", "c84a40c75229"]);
+  } = useTranslation(["f05f43127a03", "5db67d802b5d", "45dd5183faa2", "5db67d802b5d", "61e1dbc8697a", "437c008d0fd5", "d234dade2cf2", "6eddea22a854", "724f51ca3b98", "0b4ac4742a44", "8ba33ebfa3d3", "5dde0a8d98df", "f0de994f742f", "bede6ea13acc", "a1b76a677703", "f887b4a12946", "c84a40c75229", "f419fed8a1c9", "ebeb27965aab", "d4d6d094b32e", "2e864a93190a"]);
   const [apiKey, setApiKey] = reactExports.useState("");
   const [version2, setVersion] = reactExports.useState("");
   const [status, setStatus] = reactExports.useState(null);
@@ -53510,26 +53659,62 @@ function SettingsPanel({
     onClearedRecent();
     setStatus("Recent files cleared");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 bg-black/60", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface p-6 shadow-2xl", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 flex items-center justify-between", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-textPrimary", children: t("b7f547de09f9", "Settings") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onClose, className: "rounded-md border border-border px-2 py-1 text-textPrimary", children: t("9fab1eac918a", "Close") })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto w-full max-w-5xl px-6 py-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "pegasus-section-label", children: t("f05f43127a03", "General Settings") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "mt-2 text-[32px] font-bold text-textPrimary", children: t("5db67d802b5d", "API Configuration") }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("45dd5183faa2", "Manage your Pegasus preferences and translation credentials") })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm text-textSecondary", children: t("7c9819ad8740", "API key") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: showApiKey ? "text" : "password", value: apiKey, onChange: (event) => setApiKey(event.target.value), className: "w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary", placeholder: t("e86cd4944789", "Enter your Lingo.dev key") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowApiKey((value) => !value), className: "rounded-md border border-border px-3 py-2 text-sm text-textPrimary", children: showApiKey ? "Hide" : "Show" })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface p-6 shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-semibold text-textPrimary", children: t("5db67d802b5d", "API Configuration") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-textSecondary", children: t("61e1dbc8697a", "Configure your API key for document translation services") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-textPrimary", children: t("437c008d0fd5", "API Key") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: showApiKey ? "text" : "password", value: apiKey, onChange: (event) => setApiKey(event.target.value), className: "h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg", placeholder: t("d234dade2cf2", "Enter your API key") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowApiKey((value) => !value), className: "h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: showApiKey ? "Hide" : "Show" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: saveKey, className: "rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover", children: t("6eddea22a854", "Save API Key") })
+        ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: saveKey, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white", children: t("7dc6c0708504", "Save") })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-8 rounded-md border border-border bg-bg p-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: t("970d062f0f85", "App version") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-textPrimary", children: version2 || "—" })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: clearRecent, className: "mt-6 rounded-md border border-border px-4 py-2 text-sm text-textPrimary hover:border-accent", children: t("c84a40c75229", "Clear recent files") }),
-    status ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-sm text-success", children: status }) : null
-  ] }) });
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface p-6 shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xl font-semibold text-textPrimary", children: t("724f51ca3b98", "Preferences") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 rounded-lg border border-border", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between border-b border-border px-4 py-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-textPrimary", children: t("0b4ac4742a44", "Light Mode") }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: t("8ba33ebfa3d3", "Switch between light and dark themes") })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onToggleTheme, className: `pegasus-switch ${isDark ? "pegasus-switch-on" : ""}`, "aria-label": t("5dde0a8d98df", "Toggle theme"), children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "pegasus-switch-handle" }) })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-4 py-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-textPrimary", children: t("f0de994f742f", "App Version") }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: t("bede6ea13acc", "Installed Pegasus build") })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: version2 || "—" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-error/30 bg-error/5 p-6 shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "pegasus-section-label text-error", children: t("a1b76a677703", "Danger Zone") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("f887b4a12946", "This action affects your local data.") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex items-center justify-between rounded-lg border border-error/30 bg-surface px-4 py-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-textPrimary", children: t("c84a40c75229", "Clear recent files") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: t("f419fed8a1c9", "This will remove all history of recently opened files.") })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: clearRecent, className: "rounded-md border border-error/40 px-3 py-2 text-sm font-medium text-error transition hover:bg-error/10", children: t("ebeb27965aab", "Clear Recent Files") })
+        ] })
+      ] }),
+      status ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-success", children: status }) : null,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-2 text-xs text-textTertiary", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: t("d4d6d094b32e", "Pegasus v1.0.0") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1", children: t("2e864a93190a", "Powered by Lingo.dev") })
+      ] })
+    ] })
+  ] });
 }
 const uiLocales = ["en", "fr", "es", "de", "hi", "ar", "ja", "zh", "pt", "it"];
 function baseName(filePath) {
@@ -53537,14 +53722,19 @@ function baseName(filePath) {
   return chunks[chunks.length - 1];
 }
 function App() {
-  const { setLocale } = useLingoContext();
+  const {
+    t
+  } = useTranslation(["4d03b9a6b60f", "9d3d52cd3cee", "bbed7f7fa9d2", "fb5a6187ea42", "6a163e2e315e"]);
+  const {
+    setLocale
+  } = useLingoContext();
   const [currentScreen, setCurrentScreen] = reactExports.useState("home");
+  const [homeSection, setHomeSection] = reactExports.useState("home");
   const [openFile, setOpenFile] = reactExports.useState(null);
   const [selectedLanguage, setSelectedLanguage] = reactExports.useState("en");
   const [selectedLanguageByPgsPath, setSelectedLanguageByPgsPath] = reactExports.useState({});
   const [isDark, setIsDark] = reactExports.useState(true);
   const [apiKey, setApiKey] = reactExports.useState("");
-  const [settingsOpen, setSettingsOpen] = reactExports.useState(false);
   const [preloadError, setPreloadError] = reactExports.useState(null);
   const [recentFiles, setRecentFiles] = reactExports.useState([]);
   reactExports.useEffect(() => {
@@ -53553,12 +53743,7 @@ function App() {
         setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
         return;
       }
-      const [savedApiKey, theme, pendingOpenPath, savedRecent] = await Promise.all([
-        window.electronAPI.getApiKey(),
-        window.electronAPI.getTheme(),
-        window.electronAPI.openPgsFilePath(),
-        window.electronAPI.getRecentFiles()
-      ]);
+      const [savedApiKey, theme, pendingOpenPath, savedRecent] = await Promise.all([window.electronAPI.getApiKey(), window.electronAPI.getTheme(), window.electronAPI.openPgsFilePath(), window.electronAPI.getRecentFiles()]);
       setApiKey(savedApiKey);
       setIsDark(theme === "dark");
       setRecentFiles(savedRecent.slice(0, 10));
@@ -53654,65 +53839,64 @@ function App() {
       }));
     }
   };
-  const canConvert = reactExports.useMemo(
-    () => openFile?.type === "regular" || openFile?.type === "pgs",
-    [openFile]
-  );
+  const canConvert = reactExports.useMemo(() => openFile?.type === "regular" || openFile?.type === "pgs", [openFile]);
+  const activeSidebarItem = reactExports.useMemo(() => {
+    if (currentScreen === "settings") return "settings";
+    if (currentScreen === "home" && homeSection === "recent") return "recent";
+    return "home";
+  }, [currentScreen, homeSection]);
+  const goHome = () => {
+    setCurrentScreen("home");
+    setHomeSection("home");
+  };
+  const goRecent = () => {
+    setCurrentScreen("home");
+    setHomeSection("recent");
+  };
+  const goSettings = () => {
+    setCurrentScreen("settings");
+  };
+  const openDocumentAndReset = async () => {
+    setCurrentScreen("home");
+    setHomeSection("home");
+    await handleOpenFile();
+  };
+  const openPgsAndReset = async () => {
+    setCurrentScreen("home");
+    setHomeSection("home");
+    await handleOpenPgs();
+  };
+  const sidebarLogo = isDark ? appAsset("/pegasusLogo-Dark.png") : appAsset("/pegasusLogo-Light.png");
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-bg text-textPrimary", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Navbar,
-      {
-        openFile: currentScreen === "home" ? null : openFile,
-        selectedLanguage,
-        onLanguageChange: handleLanguageChange,
-        isDark,
-        onToggleTheme: toggleTheme,
-        onOpenSettings: () => setSettingsOpen(true),
-        onGoHome: () => setCurrentScreen("home")
-      }
-    ),
-    currentScreen === "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-      HomeScreen,
-      {
-        recentFiles,
-        onOpenFile: handleOpenFile,
-        onOpenPgs: handleOpenPgs,
-        onOpenRecent: (filePath) => void openFromPath(filePath),
-        isDark,
-        preloadError
-      }
-    ) : null,
-    currentScreen === "viewer" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Viewer,
-      {
-        openFile,
-        selectedLanguage,
-        isDark,
-        onConvertToPgs: canConvert ? startConvertFlow : () => {
-          setPreloadError("Translate now from .pgs is available after opening the original source document.");
-        },
-        onSelectLanguage: handleLanguageChange
-      }
-    ) : null,
-    currentScreen === "convert" && (openFile?.type === "regular" || openFile?.type === "pgs") ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ConvertFlow,
-      {
-        filePath: openFile.filePath,
-        fileName: openFile.fileName,
-        isDark,
-        onComplete: (outputPath) => void openFromPath(outputPath),
-        onCancel: () => setCurrentScreen("viewer")
-      }
-    ) : null,
-    settingsOpen ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-      SettingsPanel,
-      {
-        isDark,
-        onClose: () => setSettingsOpen(false),
-        onSavedApiKey: setApiKey,
-        onClearedRecent: () => void refreshRecentFiles()
-      }
-    ) : null,
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-h-screen", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "pegasus-sidebar w-[220px] border-r border-border bg-surface py-5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: "flex w-full items-center gap-2 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarLogo, alt: t("4d03b9a6b60f", "Pegasus"), className: "h-6 w-auto" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "mt-2 space-y-0.5 px-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: `pegasus-nav-item ${activeSidebarItem === "home" ? "pegasus-nav-item-active" : ""}`, children: t("9d3d52cd3cee", "<span0>⌂</span0> Home", {
+            span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
+          }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goRecent, className: `pegasus-nav-item ${activeSidebarItem === "recent" ? "pegasus-nav-item-active" : ""}`, children: t("bbed7f7fa9d2", "<span0>◷</span0> Recent Files", {
+            span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
+          }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goSettings, className: `pegasus-nav-item ${activeSidebarItem === "settings" ? "pegasus-nav-item-active" : ""}`, children: t("fb5a6187ea42", "<span0>⚙</span0> Settings", {
+            span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
+          }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-auto border-t border-border px-4 py-3 text-xs text-textTertiary", children: t("6a163e2e315e", "v1.0.0") })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-w-0 flex-1 flex-col", children: [
+        currentScreen === "viewer" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { openFile, selectedLanguage, onLanguageChange: handleLanguageChange, isDark, onToggleTheme: toggleTheme }) : null,
+        currentScreen === "convert" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { openFile, selectedLanguage, onLanguageChange: handleLanguageChange, isDark, onToggleTheme: toggleTheme, mode: "convert" }) : null,
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+          currentScreen === "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx(HomeScreen, { recentFiles, onOpenFile: () => void openDocumentAndReset(), onOpenPgs: () => void openPgsAndReset(), onOpenRecent: (filePath) => void openFromPath(filePath), selectedLanguage, onLanguageChange: handleLanguageChange, preloadError, mode: homeSection }) : null,
+          currentScreen === "viewer" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Viewer, { openFile, selectedLanguage, isDark, onConvertToPgs: canConvert ? startConvertFlow : () => {
+            setPreloadError("Translate now from .pgs is available after opening the original source document.");
+          }, onSelectLanguage: handleLanguageChange }) : null,
+          currentScreen === "convert" && (openFile?.type === "regular" || openFile?.type === "pgs") ? /* @__PURE__ */ jsxRuntimeExports.jsx(ConvertFlow, { filePath: openFile.filePath, fileName: openFile.fileName, onComplete: (outputPath) => void openFromPath(outputPath), onCancel: () => setCurrentScreen("viewer") }) : null,
+          currentScreen === "settings" ? /* @__PURE__ */ jsxRuntimeExports.jsx(SettingsPanel, { isDark, onSavedApiKey: setApiKey, onClearedRecent: () => void refreshRecentFiles(), onToggleTheme: toggleTheme }) : null
+        ] })
+      ] })
+    ] }),
     preloadError && currentScreen !== "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed bottom-4 left-1/2 z-50 w-[90%] max-w-xl -translate-x-1/2 rounded-md border border-error/40 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,
     /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden", children: apiKey.length > 0 ? "api-key-loaded" : "api-key-empty" })
   ] });

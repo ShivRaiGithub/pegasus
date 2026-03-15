@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 interface ConvertFlowProps {
   filePath: string;
   fileName: string;
-  isDark: boolean;
   onComplete: (outputPath: string) => void;
   onCancel: () => void;
 }
@@ -16,17 +15,24 @@ interface TranslationState {
 }
 
 const languageOptions = [
-  { code: 'en', name: 'English' },
-  { code: 'fr', name: 'French' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'de', name: 'German' },
-  { code: 'hi', name: 'Hindi' },
-  { code: 'ar', name: 'Arabic' },
-  { code: 'ja', name: 'Japanese' },
-  { code: 'zh', name: 'Chinese' },
-  { code: 'pt', name: 'Portuguese' },
-  { code: 'it', name: 'Italian' },
+  { code: 'en', name: 'English', label: 'EN-US', short: 'EN' },
+  { code: 'fr', name: 'French', label: 'FR-FR', short: 'FR' },
+  { code: 'es', name: 'Spanish', label: 'ES-ES', short: 'ES' },
+  { code: 'de', name: 'German', label: 'DE-DE', short: 'DE' },
+  { code: 'hi', name: 'Hindi', label: 'HI-IN', short: 'HI' },
+  { code: 'ar', name: 'Arabic', label: 'AR-SA', short: 'AR' },
+  { code: 'ja', name: 'Japanese', label: 'JA-JP', short: 'JA' },
+  { code: 'zh', name: 'Chinese', label: 'ZH-CN', short: 'ZH' },
+  { code: 'pt', name: 'Portuguese', label: 'PT-BR', short: 'PT' },
+  { code: 'it', name: 'Italian', label: 'IT-IT', short: 'IT' },
 ];
+
+const statusStyleMap: Record<LangStatus, string> = {
+  waiting: 'bg-bg text-textSecondary',
+  translating: 'bg-accentLight text-accent',
+  done: 'bg-successLight text-success',
+  error: 'bg-error/10 text-error',
+};
 
 function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -152,76 +158,113 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
   };
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-6 py-8">
-      <div className="mb-6 flex items-center gap-2 text-sm text-textSecondary">
-        {[1, 2, 3].map((value) => (
-          <div
-            key={value}
-            className={`rounded-full border px-3 py-1 ${step === value ? 'border-accent text-accent' : 'border-border'}`}
-          >
-            {value}
-          </div>
-        ))}
+    <section className="mx-auto w-full max-w-5xl px-8 py-8">
+      <div className="mb-5 rounded-lg border border-border bg-surface px-4 py-3">
+        <h1 className="text-2xl font-semibold text-textPrimary">New Conversion Project</h1>
       </div>
 
-      <div className="rounded-2xl border border-border bg-surface p-6">
-        <h2 className="text-xl font-semibold text-textPrimary">Convert {fileName}</h2>
+      <div className="mb-5 flex items-center gap-5 rounded-lg border border-border bg-surface px-4 py-3">
+        {[1, 2, 3].map((value) => {
+          const isActive = step === value;
+          const isDone = step > value;
+
+          return (
+            <div key={value} className="flex items-center gap-3 text-sm">
+              <div
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
+                  isDone ? 'bg-success text-white' : isActive ? 'bg-accent text-white' : 'border border-border text-textTertiary'
+                }`}
+              >
+                {isDone ? '✓' : value}
+              </div>
+              <span className={`${isActive ? 'text-accent' : 'text-textSecondary'} font-medium`}>
+                {value === 1 ? 'Languages' : value === 2 ? 'Settings' : 'Progress'}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="rounded-xl border border-border bg-surface shadow-sm">
+        <div className="border-b border-border px-5 py-4">
+          <h2 className="text-2xl font-semibold text-textPrimary">
+            {step === 1 ? 'Select Languages' : step === 2 ? 'Configuration' : 'Translating your document...'}
+          </h2>
+          <p className="mt-1 text-sm text-textSecondary">{fileName}</p>
+        </div>
 
         {step === 1 ? (
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={toggleAll}
-              className="mb-4 rounded-md border border-border px-3 py-2 text-sm text-textPrimary"
-            >
-              {allSelected ? 'Clear All' : 'Select All'}
-            </button>
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          <div className="px-5 py-5">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm text-textSecondary">Choose which languages you want to include in the passport.</p>
+              <button
+                type="button"
+                onClick={toggleAll}
+                className="text-sm font-medium text-accent hover:underline"
+              >
+                {allSelected ? 'Clear All' : 'Select All'}
+              </button>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
               {languageOptions.map((language) => (
                 <label
                   key={language.code}
-                  className="flex cursor-pointer items-center gap-2 rounded-md border border-border bg-bg px-3 py-2"
+                  className={`cursor-pointer rounded-lg border px-3 py-3 transition ${
+                    selectedLanguages.includes(language.code)
+                      ? 'border-accent bg-accentLight/40'
+                      : 'border-border bg-white hover:bg-cardHover dark:bg-bg'
+                  }`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedLanguages.includes(language.code)}
-                    onChange={() => toggleLanguage(language.code)}
-                    className="accent-accent"
-                  />
-                  <span className="text-sm text-textPrimary">
-                    {language.name} ({language.code})
-                  </span>
+                  <input type="checkbox" checked={selectedLanguages.includes(language.code)} onChange={() => toggleLanguage(language.code)} className="sr-only" />
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex rounded-md border border-border bg-bg px-2 py-0.5 text-[10px] font-semibold text-textSecondary">
+                      {language.short}
+                    </span>
+                    <span
+                      className={`inline-flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${
+                        selectedLanguages.includes(language.code)
+                          ? 'border-accent bg-accent text-white'
+                          : 'border-border text-textTertiary'
+                      }`}
+                    >
+                      ✓
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-semibold text-textPrimary">{language.name}</p>
+                  <p className="text-xs text-textSecondary">{language.label}</p>
                 </label>
               ))}
             </div>
-            <div className="mt-6 flex justify-end">
+
+            <div className="mt-6 flex justify-end border-t border-border pt-4">
               <button
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={selectedLanguages.length === 0}
-                className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Next
+                Next →
               </button>
             </div>
           </div>
         ) : null}
 
         {step === 2 ? (
-          <div className="mt-6 space-y-5">
+          <div className="space-y-5 px-5 py-5">
             <div>
-              <label className="mb-2 block text-sm text-textSecondary">API key</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">API key</label>
               <div className="flex gap-2">
                 <input
                   type={showApiKey ? 'text' : 'password'}
                   value={apiKey}
                   onChange={(event) => setApiKey(event.target.value)}
-                  className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary"
+                  className="h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg"
                 />
                 <button
                   type="button"
                   onClick={() => setShowApiKey((value) => !value)}
-                  className="rounded-md border border-border px-3 py-2 text-sm text-textPrimary"
+                  className="h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 >
                   {showApiKey ? 'Hide' : 'Show'}
                 </button>
@@ -229,28 +272,28 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-textSecondary">Instructions (optional)</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">Instructions (optional)</label>
               <textarea
                 value={instructions}
                 onChange={(event) => setInstructions(event.target.value)}
                 placeholder="e.g. Do not translate proper nouns, keep brand names in English"
-                className="h-28 w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary"
+                className="h-28 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-textSecondary">Output folder</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">Output folder</label>
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={outputDir}
                   placeholder="Choose folder"
-                  className="w-full rounded-md border border-border bg-bg px-3 py-2 text-sm text-textPrimary"
+                  className="h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 />
                 <button
                   type="button"
                   onClick={chooseFolder}
-                  className="rounded-md border border-border px-3 py-2 text-sm text-textPrimary"
+                  className="h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 >
                   Browse
                 </button>
@@ -259,85 +302,96 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
 
             {errorMessage ? <p className="text-sm text-error">{errorMessage}</p> : null}
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-t border-border pt-4">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="rounded-md border border-border px-4 py-2 text-sm text-textPrimary"
+                className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-textPrimary"
               >
                 Back
               </button>
               <button
                 type="button"
                 onClick={startTranslation}
-                className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover"
               >
-                Translate
+                Create Language Passport
               </button>
             </div>
           </div>
         ) : null}
 
         {step === 3 ? (
-          <div className="mt-6 space-y-4">
-            {languageOptions
-              .filter((language) => selectedLanguages.includes(language.code))
-              .map((language) => {
-                const entry = states[language.code];
-                return (
-                  <div
-                    key={language.code}
-                    className="flex items-center justify-between rounded-md border border-border bg-bg px-3 py-2"
-                  >
-                    <div>
-                      <p className="text-sm text-textPrimary">{language.name}</p>
-                      <p className="text-xs uppercase text-textSecondary">{language.code}</p>
-                    </div>
-                    <p
-                      className={`text-sm ${
-                        entry?.status === 'done'
-                          ? 'text-success'
-                          : entry?.status === 'error'
-                            ? 'text-error'
-                            : 'text-textSecondary'
-                      }`}
-                    >
-                      {entry?.status ?? 'waiting'}
-                    </p>
-                  </div>
-                );
-              })}
-
+          <div className="space-y-4 px-5 py-5">
             <div>
-              <div className="mb-1 flex items-center justify-between text-xs text-textSecondary">
-                <span>Overall progress</span>
-                <span>{overallProgress}%</span>
+              <div className="mb-1 flex items-center justify-between text-sm text-textSecondary">
+                <span>Total completion</span>
+                <span className="font-semibold text-accent">{overallProgress}%</span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded bg-bg">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-bg">
                 <div className="h-full bg-accent transition-all" style={{ width: `${overallProgress}%` }} />
               </div>
             </div>
 
+            {languageOptions
+              .filter((language) => selectedLanguages.includes(language.code))
+              .map((language) => {
+                const entry = states[language.code];
+                const status = entry?.status ?? 'waiting';
+                return (
+                  <div
+                    key={language.code}
+                    className="flex items-center justify-between rounded-lg border border-border bg-white px-4 py-3 dark:bg-bg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex rounded-md border border-border bg-bg px-2 py-0.5 text-[10px] font-semibold text-textSecondary">
+                        {language.short}
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium text-textPrimary">{language.name}</p>
+                        <p className="text-xs text-textSecondary">{language.label}</p>
+                      </div>
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${statusStyleMap[status]}`}>
+                      {status}
+                    </span>
+                  </div>
+                );
+              })}
+
             {errorMessage ? <p className="text-sm text-error">{errorMessage}</p> : null}
 
             {!isRunning && resultPath ? (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => onComplete(resultPath)}
-                  className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white"
-                >
-                  Open .pgs file
-                </button>
+              <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-4">
+                <p className="text-sm font-medium text-success">Language Passport created successfully.</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onComplete(resultPath)}
+                    className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white"
+                  >
+                    Open Passport
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onCancel}
+                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-textPrimary"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center border-t border-border pt-3">
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="rounded-md border border-border px-4 py-2 text-sm text-textPrimary"
+                  className="text-sm text-textSecondary hover:text-textPrimary"
                 >
-                  Done
+                  Cancel operation
                 </button>
               </div>
-            ) : null}
+            )}
           </div>
         ) : null}
       </div>

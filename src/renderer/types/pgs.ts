@@ -36,7 +36,7 @@ export interface ExtractedContent {
   };
 }
 
-export type AppScreen = 'home' | 'viewer' | 'convert';
+export type AppScreen = 'home' | 'viewer' | 'convert' | 'settings';
 
 export interface OpenFileState {
   type: 'regular' | 'pgs';

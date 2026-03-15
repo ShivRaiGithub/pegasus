@@ -6,6 +6,7 @@ import Viewer from './components/Viewer';
 import ConvertFlow from './components/ConvertFlow';
 import SettingsPanel from './components/SettingsPanel';
 import type { AppScreen, OpenFileState } from './types/pgs';
+import { appAsset } from './utils/assets';
 
 const uiLocales = ['en', 'fr', 'es', 'de', 'hi', 'ar', 'ja', 'zh', 'pt', 'it'] as const;
 type UiLocale = (typeof uiLocales)[number];
@@ -18,12 +19,12 @@ function baseName(filePath: string): string {
 function App() {
   const { setLocale } = useLingoContext();
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('home');
+  const [homeSection, setHomeSection] = useState<'home' | 'recent'>('home');
   const [openFile, setOpenFile] = useState<OpenFileState | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [selectedLanguageByPgsPath, setSelectedLanguageByPgsPath] = useState<Record<string, string>>({});
   const [isDark, setIsDark] = useState(true);
   const [apiKey, setApiKey] = useState('');
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [preloadError, setPreloadError] = useState<string | null>(null);
   const [recentFiles, setRecentFiles] = useState<string[]>([]);
 
@@ -163,63 +164,152 @@ function App() {
     [openFile]
   );
 
+  const activeSidebarItem = useMemo(() => {
+    if (currentScreen === 'settings') return 'settings';
+    if (currentScreen === 'home' && homeSection === 'recent') return 'recent';
+    return 'home';
+  }, [currentScreen, homeSection]);
+
+  const goHome = () => {
+    setCurrentScreen('home');
+    setHomeSection('home');
+  };
+
+  const goRecent = () => {
+    setCurrentScreen('home');
+    setHomeSection('recent');
+  };
+
+  const goSettings = () => {
+    setCurrentScreen('settings');
+  };
+
+  const openDocumentAndReset = async () => {
+    setCurrentScreen('home');
+    setHomeSection('home');
+    await handleOpenFile();
+  };
+
+  const openPgsAndReset = async () => {
+    setCurrentScreen('home');
+    setHomeSection('home');
+    await handleOpenPgs();
+  };
+
+  const sidebarLogo = isDark ? appAsset('/pegasusLogo-Dark.png') : appAsset('/pegasusLogo-Light.png');
+
   return (
     <div className="min-h-screen bg-bg text-textPrimary">
-      <Navbar
-        openFile={currentScreen === 'home' ? null : openFile}
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={handleLanguageChange}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
-        onOpenSettings={() => setSettingsOpen(true)}
-        onGoHome={() => setCurrentScreen('home')}
-      />
+      <div className="flex min-h-screen">
+        <aside className="pegasus-sidebar w-[220px] border-r border-border bg-surface py-5">
+          <div className="px-4 pb-3">
+            <button type="button" onClick={goHome} className="flex w-full items-center gap-2 text-left">
+              <img src={sidebarLogo} alt="Pegasus" className="h-6 w-auto" />
+            </button>
+          </div>
 
-      {currentScreen === 'home' ? (
-        <HomeScreen
-          recentFiles={recentFiles}
-          onOpenFile={handleOpenFile}
-          onOpenPgs={handleOpenPgs}
-          onOpenRecent={(filePath) => void openFromPath(filePath)}
-          isDark={isDark}
-          preloadError={preloadError}
-        />
-      ) : null}
+          <nav className="mt-2 space-y-0.5 px-2">
+            <button
+              type="button"
+              onClick={goHome}
+              className={`pegasus-nav-item ${activeSidebarItem === 'home' ? 'pegasus-nav-item-active' : ''}`}
+            >
+              <span className="inline-flex h-4 w-4 items-center justify-center">⌂</span>
+              Home
+            </button>
+            <button
+              type="button"
+              onClick={goRecent}
+              className={`pegasus-nav-item ${activeSidebarItem === 'recent' ? 'pegasus-nav-item-active' : ''}`}
+            >
+              <span className="inline-flex h-4 w-4 items-center justify-center">◷</span>
+              Recent Files
+            </button>
+            <button
+              type="button"
+              onClick={goSettings}
+              className={`pegasus-nav-item ${activeSidebarItem === 'settings' ? 'pegasus-nav-item-active' : ''}`}
+            >
+              <span className="inline-flex h-4 w-4 items-center justify-center">⚙</span>
+              Settings
+            </button>
+          </nav>
 
-      {currentScreen === 'viewer' && openFile ? (
-        <Viewer
-          openFile={openFile}
-          selectedLanguage={selectedLanguage}
-          isDark={isDark}
-          onConvertToPgs={
-            canConvert
-              ? startConvertFlow
-              : () => {
-                  setPreloadError('Translate now from .pgs is available after opening the original source document.');
+          <div className="mt-auto border-t border-border px-4 py-3 text-xs text-textTertiary">v1.0.0</div>
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          {currentScreen === 'viewer' && openFile ? (
+            <Navbar
+              openFile={openFile}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              isDark={isDark}
+              onToggleTheme={toggleTheme}
+            />
+          ) : null}
+
+          {currentScreen === 'convert' && openFile ? (
+            <Navbar
+              openFile={openFile}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              isDark={isDark}
+              onToggleTheme={toggleTheme}
+              mode="convert"
+            />
+          ) : null}
+
+          <div className="flex-1">
+            {currentScreen === 'home' ? (
+              <HomeScreen
+                recentFiles={recentFiles}
+                onOpenFile={() => void openDocumentAndReset()}
+                onOpenPgs={() => void openPgsAndReset()}
+                onOpenRecent={(filePath) => void openFromPath(filePath)}
+                selectedLanguage={selectedLanguage}
+                onLanguageChange={handleLanguageChange}
+                preloadError={preloadError}
+                mode={homeSection}
+              />
+            ) : null}
+
+            {currentScreen === 'viewer' && openFile ? (
+              <Viewer
+                openFile={openFile}
+                selectedLanguage={selectedLanguage}
+                isDark={isDark}
+                onConvertToPgs={
+                  canConvert
+                    ? startConvertFlow
+                    : () => {
+                        setPreloadError('Translate now from .pgs is available after opening the original source document.');
+                      }
                 }
-          }
-          onSelectLanguage={handleLanguageChange}
-        />
-      ) : null}
+                onSelectLanguage={handleLanguageChange}
+              />
+            ) : null}
 
-      {currentScreen === 'convert' && (openFile?.type === 'regular' || openFile?.type === 'pgs') ? (
-        <ConvertFlow
-          filePath={openFile.filePath}
-          fileName={openFile.fileName}
-          isDark={isDark}
-          onComplete={(outputPath) => void openFromPath(outputPath)}
-          onCancel={() => setCurrentScreen('viewer')}
-        />
-      ) : null}
+            {currentScreen === 'convert' && (openFile?.type === 'regular' || openFile?.type === 'pgs') ? (
+              <ConvertFlow
+                filePath={openFile.filePath}
+                fileName={openFile.fileName}
+                onComplete={(outputPath) => void openFromPath(outputPath)}
+                onCancel={() => setCurrentScreen('viewer')}
+              />
+            ) : null}
 
-      {settingsOpen ? (
-        <SettingsPanel
-          isDark={isDark}
-          onClose={() => setSettingsOpen(false)}
-          onSavedApiKey={setApiKey}
-          onClearedRecent={() => void refreshRecentFiles()}
-        />
-      ) : null}
+            {currentScreen === 'settings' ? (
+              <SettingsPanel
+                isDark={isDark}
+                onSavedApiKey={setApiKey}
+                onClearedRecent={() => void refreshRecentFiles()}
+                onToggleTheme={toggleTheme}
+              />
+            ) : null}
+          </div>
+        </div>
+      </div>
 
       {preloadError && currentScreen !== 'home' ? (
         <div className="fixed bottom-4 left-1/2 z-50 w-[90%] max-w-xl -translate-x-1/2 rounded-md border border-error/40 bg-error/10 px-4 py-3 text-sm text-error">
