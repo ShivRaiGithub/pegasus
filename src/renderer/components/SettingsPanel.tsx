@@ -72,7 +72,7 @@ function SettingsPanel({ isDark, onSavedApiKey, onClearedRecent, onToggleTheme }
                 onClick={() => setShowApiKey((value) => !value)}
                 className="h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
               >
-                {showApiKey ? 'Hide' : 'Show'}
+                {showApiKey ? <>Hide</> : <>Show</>}
               </button>
             </div>
 
