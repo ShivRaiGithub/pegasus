@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { LingoProvider } from '@lingo.dev/compiler/react';
 import App from './App';
+import '@fontsource/noto-sans-devanagari/400.css';
+import '@fontsource/noto-sans-devanagari/500.css';
+import '@fontsource/noto-sans-devanagari/600.css';
 import './index.css';
 
 if (window.location.protocol === 'file:') {

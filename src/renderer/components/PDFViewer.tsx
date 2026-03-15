@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { PageTextMap } from '../types/pgs';
 
+const PDF_OVERLAY_FONT_STACK =
+  "'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', 'Kohinoor Devanagari', sans-serif";
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/legacy/build/pdf.worker.min.mjs', import.meta.url).href;
 
 interface PDFViewerProps {
@@ -142,7 +145,7 @@ function fitFontSizeToWidth(
   const safeBase = Math.max(baseFontSize, 8);
   const safeWidth = Math.max(availableWidth, 24);
 
-  context.font = `${safeBase}px sans-serif`;
+  context.font = `${safeBase}px ${PDF_OVERLAY_FONT_STACK}`;
   const measured = context.measureText(text).width;
 
   if (!Number.isFinite(measured) || measured <= 0 || measured <= safeWidth) {
@@ -255,7 +258,7 @@ function PDFViewer({ pdfBase64, translatedPageTextMap, isDark }: PDFViewerProps)
                 span.style.lineHeight = '1';
                 span.style.color = '#000000';
                 span.style.textDecoration = 'none';
-                span.style.fontFamily = 'sans-serif';
+                span.style.fontFamily = PDF_OVERLAY_FONT_STACK;
                 span.style.whiteSpace = 'nowrap';
                 span.style.overflow = 'hidden';
                 span.style.backgroundColor = 'transparent';

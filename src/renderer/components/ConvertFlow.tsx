@@ -34,6 +34,10 @@ const statusStyleMap: Record<LangStatus, string> = {
   error: 'bg-error/10 text-error',
 };
 
+function sanitizeUiLabel(value: string): string {
+  return value.replace(/<[^>]+>/g, '').replace(/\s{2,}/g, ' ').trim();
+}
+
 function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
@@ -178,7 +182,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                 {isDone ? '✓' : value}
               </div>
               <span className={`${isActive ? 'text-accent' : 'text-textSecondary'} font-medium`}>
-                {value === 1 ? 'Languages' : value === 2 ? 'Settings' : 'Progress'}
+                {sanitizeUiLabel(value === 1 ? 'Languages' : value === 2 ? 'Settings' : 'Progress')}
               </span>
             </div>
           );
@@ -188,7 +192,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
       <div className="rounded-xl border border-border bg-surface shadow-sm">
         <div className="border-b border-border px-5 py-4">
           <h2 className="text-2xl font-semibold text-textPrimary">
-            {step === 1 ? 'Select Languages' : step === 2 ? 'Configuration' : 'Translating your document...'}
+            {sanitizeUiLabel(step === 1 ? 'Select Languages' : step === 2 ? 'Configuration' : 'Translating your document...')}
           </h2>
           <p className="mt-1 text-sm text-textSecondary">{fileName}</p>
         </div>
@@ -196,13 +200,15 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
         {step === 1 ? (
           <div className="px-5 py-5">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-sm text-textSecondary">Choose which languages you want to include in the passport.</p>
+              <p className="text-sm text-textSecondary">
+                {sanitizeUiLabel('Choose which languages you want to include in the passport.')}
+              </p>
               <button
                 type="button"
                 onClick={toggleAll}
                 className="text-sm font-medium text-accent hover:underline"
               >
-                {allSelected ? 'Clear All' : 'Select All'}
+                {sanitizeUiLabel(allSelected ? 'Clear All' : 'Select All')}
               </button>
             </div>
 
@@ -244,7 +250,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                 disabled={selectedLanguages.length === 0}
                 className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Next →
+                {sanitizeUiLabel('Next →')}
               </button>
             </div>
           </div>
@@ -253,7 +259,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
         {step === 2 ? (
           <div className="space-y-5 px-5 py-5">
             <div>
-              <label className="mb-2 block text-sm font-medium text-textPrimary">API key</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">{sanitizeUiLabel('API key')}</label>
               <div className="flex gap-2">
                 <input
                   type={showApiKey ? 'text' : 'password'}
@@ -266,28 +272,30 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                   onClick={() => setShowApiKey((value) => !value)}
                   className="h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 >
-                  {showApiKey ? 'Hide' : 'Show'}
+                  {sanitizeUiLabel(showApiKey ? 'Hide' : 'Show')}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-textPrimary">Instructions (optional)</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">
+                {sanitizeUiLabel('Instructions (optional)')}
+              </label>
               <textarea
                 value={instructions}
                 onChange={(event) => setInstructions(event.target.value)}
-                placeholder="e.g. Do not translate proper nouns, keep brand names in English"
+                placeholder={sanitizeUiLabel('e.g. Do not translate proper nouns, keep brand names in English')}
                 className="h-28 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-textPrimary">Output folder</label>
+              <label className="mb-2 block text-sm font-medium text-textPrimary">{sanitizeUiLabel('Output folder')}</label>
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={outputDir}
-                  placeholder="Choose folder"
+                  placeholder={sanitizeUiLabel('Choose folder')}
                   className="h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 />
                 <button
@@ -295,7 +303,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                   onClick={chooseFolder}
                   className="h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
                 >
-                  Browse
+                  {sanitizeUiLabel('Browse')}
                 </button>
               </div>
             </div>
@@ -308,14 +316,14 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                 onClick={() => setStep(1)}
                 className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-textPrimary"
               >
-                Back
+                {sanitizeUiLabel('Back')}
               </button>
               <button
                 type="button"
                 onClick={startTranslation}
                 className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover"
               >
-                Create Language Passport
+                {sanitizeUiLabel('Create Language Passport')}
               </button>
             </div>
           </div>
@@ -325,7 +333,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
           <div className="space-y-4 px-5 py-5">
             <div>
               <div className="mb-1 flex items-center justify-between text-sm text-textSecondary">
-                <span>Total completion</span>
+                <span>{sanitizeUiLabel('Total completion')}</span>
                 <span className="font-semibold text-accent">{overallProgress}%</span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-bg">
@@ -353,7 +361,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                       </div>
                     </div>
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${statusStyleMap[status]}`}>
-                      {status}
+                      {sanitizeUiLabel(status)}
                     </span>
                   </div>
                 );
@@ -363,21 +371,23 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
 
             {!isRunning && resultPath ? (
               <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-4">
-                <p className="text-sm font-medium text-success">Language Passport created successfully.</p>
+                <p className="text-sm font-medium text-success">
+                  {sanitizeUiLabel('Language Passport created successfully.')}
+                </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => onComplete(resultPath)}
                     className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white"
                   >
-                    Open Passport
+                    {sanitizeUiLabel('Open Passport')}
                   </button>
                   <button
                     type="button"
                     onClick={onCancel}
                     className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-textPrimary"
                   >
-                    Done
+                    {sanitizeUiLabel('Done')}
                   </button>
                 </div>
               </div>
@@ -388,7 +398,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                   onClick={onCancel}
                   className="text-sm text-textSecondary hover:text-textPrimary"
                 >
-                  Cancel operation
+                  {sanitizeUiLabel('Cancel operation')}
                 </button>
               </div>
             )}

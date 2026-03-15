@@ -27,6 +27,21 @@ const languageNameMap: Record<string, string> = {
   it: 'Italian',
 };
 
+const DEVANAGARI_FONT_FALLBACK =
+  "'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', 'Kohinoor Devanagari', sans-serif";
+
+function withHindiFallback(fontFamily?: string): string {
+  if (!fontFamily || fontFamily.trim().length === 0) {
+    return DEVANAGARI_FONT_FALLBACK;
+  }
+
+  if (fontFamily.toLowerCase().includes('noto sans devanagari')) {
+    return fontFamily;
+  }
+
+  return `${fontFamily}, ${DEVANAGARI_FONT_FALLBACK}`;
+}
+
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
   const binaryStr = atob(base64);
   const bytes = new Uint8Array(binaryStr.length);
@@ -264,14 +279,16 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
       span.style.background = '#ffffff';
       span.style.padding = '0 1px';
       span.style.pointerEvents = 'none';
+      span.style.color = '#000000';
 
       if (computedStyle) {
         span.style.fontSize = computedStyle.fontSize;
-        span.style.fontFamily = computedStyle.fontFamily;
+        span.style.fontFamily = withHindiFallback(computedStyle.fontFamily);
         span.style.fontWeight = computedStyle.fontWeight;
         span.style.lineHeight = computedStyle.lineHeight;
         span.style.letterSpacing = computedStyle.letterSpacing;
-        span.style.color = '#000000';
+      } else {
+        span.style.fontFamily = DEVANAGARI_FONT_FALLBACK;
       }
 
       overlayRoot.appendChild(span);
@@ -470,7 +487,7 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
             ) : null}
 
             {fileType === 'txt' ? (
-              <pre className="mx-auto max-w-[800px] whitespace-pre-wrap rounded-md bg-bg px-6 py-6 font-mono text-base leading-8 text-textPrimary">
+              <pre className="mx-auto max-w-[800px] whitespace-pre-wrap rounded-md bg-bg px-6 py-6 text-base leading-8 text-textPrimary">
                 {txtContent}
               </pre>
             ) : null}
