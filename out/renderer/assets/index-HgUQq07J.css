@@ -1014,11 +1014,42 @@ body {
 }
 
 .docx-container {
+  position: relative;
   width: 100%;
   height: 100%;
   overflow-y: auto;
   background: var(--color-surface);
   padding: 24px;
+}
+
+.docx-layer {
+  width: 100%;
+}
+
+.docx-original-layer {
+  position: relative;
+  z-index: 1;
+}
+
+.docx-overlay-measure-layer {
+  position: absolute;
+  inset: 24px;
+  z-index: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.docx-text-overlay-layer {
+  position: absolute;
+  inset: 24px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.docx-overlay-measure-layer .docx-preview-wrapper,
+.docx-text-overlay-layer .docx-preview-wrapper {
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 .docx-preview-wrapper {

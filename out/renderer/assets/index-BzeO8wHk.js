@@ -52983,7 +52983,9 @@ function Viewer({
   } = useTranslation(["aaa63dceae98"]);
   const [isLoading, setIsLoading] = reactExports.useState(false);
   const [errorMessage, setErrorMessage] = reactExports.useState(null);
-  const docxContainerRef = reactExports.useRef(null);
+  const docxOriginalLayerRef = reactExports.useRef(null);
+  const docxOverlayMeasureLayerRef = reactExports.useRef(null);
+  const docxTextOverlayLayerRef = reactExports.useRef(null);
   const isPgs = openFile.type === "pgs";
   const fileType = openFile.type === "pgs" ? openFile.pgsData?.originalType : openFile.extractedContent?.metadata.type;
   const availableLanguages = openFile.pgsData?.availableLanguages ?? [];
@@ -53004,6 +53006,23 @@ function Viewer({
     }
     return regularBase64;
   }, [fileType, openFile.type, regularBase64, selectedPgsPayload]);
+  const originalDocxBase64 = reactExports.useMemo(() => {
+    if (fileType !== "docx") {
+      return "";
+    }
+    if (openFile.type === "pgs") {
+      return openFile.pgsData?.files.original ?? "";
+    }
+    return regularBase64;
+  }, [fileType, openFile.pgsData?.files.original, openFile.type, regularBase64]);
+  const useDocxOverlayModel = reactExports.useMemo(() => {
+    if (fileType !== "docx" || openFile.type !== "pgs" || selectedLanguage === "original") {
+      return false;
+    }
+    const original = openFile.pgsData?.files.original;
+    const translated = openFile.pgsData?.files[selectedLanguage];
+    return typeof original === "string" && original.length > 0 && typeof translated === "string" && translated.length > 0;
+  }, [fileType, openFile.pgsData?.files, openFile.type, selectedLanguage]);
   const pdfBase64 = reactExports.useMemo(() => {
     if (fileType !== "pdf") {
       return "";
@@ -53037,30 +53056,119 @@ function Viewer({
     }
     return openFile.extractedContent?.texts.join("\n") ?? "";
   }, [fileType, openFile.extractedContent?.texts, openFile.type, selectedPgsPayload]);
+  const renderDocxInto = async (base64, target) => {
+    target.innerHTML = "";
+    const arrayBuffer = base64ToArrayBuffer(base64);
+    await renderAsync(arrayBuffer, target, void 0, {
+      className: "docx-preview",
+      inWrapper: true,
+      ignoreWidth: false,
+      ignoreHeight: false,
+      ignoreFonts: false,
+      breakPages: true,
+      ignoreLastRenderedPageBreak: true,
+      experimental: false,
+      trimXmlDeclaration: true,
+      useBase64URL: true,
+      renderChanges: false,
+      renderHeaders: true,
+      renderFooters: true,
+      renderFootnotes: true,
+      renderEndnotes: true
+    });
+  };
+  const clearDocxLayers = () => {
+    if (docxOriginalLayerRef.current) {
+      docxOriginalLayerRef.current.innerHTML = "";
+    }
+    if (docxOverlayMeasureLayerRef.current) {
+      docxOverlayMeasureLayerRef.current.innerHTML = "";
+    }
+    if (docxTextOverlayLayerRef.current) {
+      docxTextOverlayLayerRef.current.innerHTML = "";
+    }
+  };
+  const collectTextNodes = (root) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let current = walker.nextNode();
+    while (current) {
+      const textNode = current;
+      if (textNode.textContent && textNode.textContent.trim().length > 0) {
+        nodes.push(textNode);
+      }
+      current = walker.nextNode();
+    }
+    return nodes;
+  };
+  const renderDocxTextOverlay = () => {
+    const originalRoot = docxOriginalLayerRef.current;
+    const translatedMeasureRoot = docxOverlayMeasureLayerRef.current;
+    const overlayRoot = docxTextOverlayLayerRef.current;
+    if (!originalRoot || !translatedMeasureRoot || !overlayRoot) {
+      return;
+    }
+    overlayRoot.innerHTML = "";
+    const originalNodes = collectTextNodes(originalRoot);
+    const translatedNodes = collectTextNodes(translatedMeasureRoot);
+    const pairCount = Math.min(originalNodes.length, translatedNodes.length);
+    const originalBounds = originalRoot.getBoundingClientRect();
+    overlayRoot.style.height = `${Math.max(originalRoot.scrollHeight, originalRoot.offsetHeight)}px`;
+    for (let index = 0; index < pairCount; index += 1) {
+      const sourceNode = originalNodes[index];
+      const translatedNode = translatedNodes[index];
+      const translatedText = translatedNode.textContent?.trim();
+      if (!translatedText) {
+        continue;
+      }
+      const range = document.createRange();
+      range.setStart(sourceNode, 0);
+      range.setEnd(sourceNode, sourceNode.length);
+      const rect = range.getBoundingClientRect();
+      if (!rect.width || !rect.height) {
+        continue;
+      }
+      const sourceElement = sourceNode.parentElement;
+      const computedStyle = sourceElement ? window.getComputedStyle(sourceElement) : null;
+      const span = document.createElement("span");
+      span.textContent = translatedText;
+      span.style.position = "absolute";
+      span.style.left = `${rect.left - originalBounds.left}px`;
+      span.style.top = `${rect.top - originalBounds.top}px`;
+      span.style.width = `${Math.max(rect.width, 20)}px`;
+      span.style.minHeight = `${Math.max(rect.height, 12)}px`;
+      span.style.display = "block";
+      span.style.whiteSpace = "nowrap";
+      span.style.overflow = "hidden";
+      span.style.textOverflow = "clip";
+      span.style.background = "#ffffff";
+      span.style.padding = "0 1px";
+      span.style.pointerEvents = "none";
+      if (computedStyle) {
+        span.style.fontSize = computedStyle.fontSize;
+        span.style.fontFamily = computedStyle.fontFamily;
+        span.style.fontWeight = computedStyle.fontWeight;
+        span.style.lineHeight = computedStyle.lineHeight;
+        span.style.letterSpacing = computedStyle.letterSpacing;
+        span.style.color = "#000000";
+      }
+      overlayRoot.appendChild(span);
+    }
+  };
   const renderDocx = async (base64) => {
-    if (!docxContainerRef.current) return;
+    if (!docxOriginalLayerRef.current) {
+      return;
+    }
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      docxContainerRef.current.innerHTML = "";
-      const arrayBuffer = base64ToArrayBuffer(base64);
-      await renderAsync(arrayBuffer, docxContainerRef.current, void 0, {
-        className: "docx-preview",
-        inWrapper: true,
-        ignoreWidth: false,
-        ignoreHeight: false,
-        ignoreFonts: false,
-        breakPages: true,
-        ignoreLastRenderedPageBreak: true,
-        experimental: false,
-        trimXmlDeclaration: true,
-        useBase64URL: true,
-        renderChanges: false,
-        renderHeaders: true,
-        renderFooters: true,
-        renderFootnotes: true,
-        renderEndnotes: true
-      });
+      await renderDocxInto(base64, docxOriginalLayerRef.current);
+      if (docxOverlayMeasureLayerRef.current) {
+        docxOverlayMeasureLayerRef.current.innerHTML = "";
+      }
+      if (docxTextOverlayLayerRef.current) {
+        docxTextOverlayLayerRef.current.innerHTML = "";
+      }
     } catch (err) {
       console.error("docx-preview failed:", err);
       setErrorMessage("Failed to render document");
@@ -53068,25 +53176,50 @@ function Viewer({
       setIsLoading(false);
     }
   };
+  const renderDocxOverlay = async (originalBase64, translatedBase64) => {
+    if (!docxOriginalLayerRef.current || !docxOverlayMeasureLayerRef.current || !docxTextOverlayLayerRef.current) {
+      return;
+    }
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      await renderDocxInto(originalBase64, docxOriginalLayerRef.current);
+      await renderDocxInto(translatedBase64, docxOverlayMeasureLayerRef.current);
+      renderDocxTextOverlay();
+    } catch (err) {
+      console.error("docx overlay render failed:", err);
+      setErrorMessage("Failed to render translated DOCX overlay");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   reactExports.useEffect(() => {
     if (!openFile) return;
     if (fileType !== "docx") {
+      clearDocxLayers();
       setIsLoading(false);
       setErrorMessage(null);
+      return;
+    }
+    if (useDocxOverlayModel) {
+      const translatedBase64 = openFile.pgsData?.files[selectedLanguage] ?? "";
+      if (originalDocxBase64 && translatedBase64) {
+        void renderDocxOverlay(originalDocxBase64, translatedBase64);
+      }
       return;
     }
     if (openFile.type === "regular" && openFile.extractedContent?.fileBase64) {
       void renderDocx(openFile.extractedContent.fileBase64);
     } else if (openFile.type === "pgs" && openFile.pgsData) {
-      console.log("pgsData files keys:", Object.keys(openFile.pgsData.files));
       const langBase64 = selectedLanguage === "original" ? openFile.pgsData.files["original"] : openFile.pgsData.files[selectedLanguage];
       if (langBase64) {
         void renderDocx(langBase64);
       }
     }
-  }, [openFile, selectedLanguage, fileType]);
+  }, [fileType, openFile, originalDocxBase64, selectedLanguage, useDocxOverlayModel]);
   reactExports.useEffect(() => {
     if (fileType !== "docx") {
+      clearDocxLayers();
       setIsLoading(false);
       setErrorMessage(null);
     }
@@ -53097,7 +53230,13 @@ function Viewer({
       fileType === "docx" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
         position: "relative"
       }, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "docx-container", ref: docxContainerRef }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "docx-container", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "docx-layer docx-original-layer", ref: docxOriginalLayerRef }),
+          useDocxOverlayModel ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "docx-layer docx-overlay-measure-layer", ref: docxOverlayMeasureLayerRef }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "docx-layer docx-text-overlay-layer", ref: docxTextOverlayLayerRef })
+          ] }) : null
+        ] }),
         isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
           position: "absolute",
           inset: 0,
