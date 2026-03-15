@@ -53325,7 +53325,7 @@ function Viewer({
     }
   }, [fileType]);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto w-full max-w-6xl px-6 pb-12 pt-6", children: [
-    openFile.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "-mx-6 mb-4 flex items-center justify-end border-b border-border bg-surface px-6 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onConvertToPgs, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accentHover", children: t("99bc616b9cfc", "Create Language Passport") }) }) : null,
+    openFile.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "-mx-6 mb-4 flex items-center justify-center border-b border-border bg-surface px-6 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onConvertToPgs, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accentHover", children: t("99bc616b9cfc", "Create Language Passport") }) }) : null,
     openFile.type === "pgs" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-4 space-y-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface px-6 py-7 text-center shadow-sm", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: `${BRAND_NAME} icon`, className: "h-7 w-7" }) }),

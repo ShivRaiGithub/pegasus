@@ -393,7 +393,7 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
   return (
     <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-6">
       {openFile.type === 'regular' ? (
-        <div className="-mx-6 mb-4 flex items-center justify-end border-b border-border bg-surface px-6 py-3">
+        <div className="-mx-6 mb-4 flex items-center justify-center border-b border-border bg-surface px-6 py-3">
           <button
             type="button"
             onClick={onConvertToPgs}
