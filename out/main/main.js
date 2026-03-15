@@ -27,8 +27,16 @@ async function extractDocx(filePath) {
   };
 }
 async function extractPdf(filePath) {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = "";
+  if (!("toHex" in Uint8Array.prototype)) {
+    Object.defineProperty(Uint8Array.prototype, "toHex", {
+      value: function() {
+        return Buffer.from(this).toString("hex");
+      },
+      enumerable: false
+    });
+  }
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = require2.resolve("pdfjs-dist/legacy/build/pdf.worker.mjs");
   const buffer = await fs.promises.readFile(filePath);
   const data = new Uint8Array(buffer);
   const document = await pdfjs.getDocument({ data, useSystemFonts: true }).promise;

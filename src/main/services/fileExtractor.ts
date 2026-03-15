@@ -54,8 +54,17 @@ async function extractDocx(filePath: string): Promise<ExtractedContent> {
 }
 
 async function extractPdf(filePath: string): Promise<ExtractedContent> {
-  const pdfjs = await import('pdfjs-dist');
-  pdfjs.GlobalWorkerOptions.workerSrc = '';
+  if (!('toHex' in Uint8Array.prototype)) {
+    Object.defineProperty(Uint8Array.prototype, 'toHex', {
+      value: function () {
+        return Buffer.from(this).toString('hex');
+      },
+      enumerable: false,
+    });
+  }
+
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
 
   const buffer = await fs.promises.readFile(filePath);
   const data = new Uint8Array(buffer);
