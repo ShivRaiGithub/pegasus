@@ -1,4 +1,5 @@
 import { appAsset } from '../utils/assets';
+import { BRAND_NAME } from '../utils/brand';
 
 interface HomeScreenProps {
   onOpenFile: () => void;
@@ -123,9 +124,9 @@ function HomeScreen({
 
             <div className="text-center">
               <div className="inline-flex items-center justify-center rounded-2xl">
-                <img src={heroLogo} alt="Pegasus logo" className="w-[75%] min-w-[220px] max-w-[340px]" />
+                <img src={heroLogo} alt={`${BRAND_NAME} logo`} className="w-[75%] min-w-[220px] max-w-[340px]" />
               </div>
-              <h1 className="mt-3 text-[36px] font-bold tracking-tight text-textPrimary">Pegasus</h1>
+              <h1 className="mt-3 text-[36px] font-bold tracking-tight text-textPrimary">{BRAND_NAME}</h1>
               <p className="mt-2 text-sm text-textSecondary">Your document&apos;s Language Passport</p>
             </div>
           </div>

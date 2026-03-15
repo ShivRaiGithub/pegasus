@@ -7,6 +7,7 @@ import ConvertFlow from './components/ConvertFlow';
 import SettingsPanel from './components/SettingsPanel';
 import type { AppScreen, OpenFileState } from './types/pgs';
 import { appAsset } from './utils/assets';
+import { BRAND_NAME } from './utils/brand';
 
 const uiLocales = ['en', 'fr', 'es', 'de', 'hi', 'ar', 'ja', 'zh', 'pt', 'it'] as const;
 type UiLocale = (typeof uiLocales)[number];
@@ -31,7 +32,7 @@ function App() {
   useEffect(() => {
     const loadInitialState = async () => {
       if (!window.electronAPI) {
-        setPreloadError('Pegasus preload bridge failed to load. Please restart the app.');
+        setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
         return;
       }
 
@@ -79,7 +80,7 @@ function App() {
 
   const openFromPath = async (filePath: string) => {
     if (!window.electronAPI) {
-      setPreloadError('Pegasus preload bridge failed to load. Please restart the app.');
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
 
@@ -117,7 +118,7 @@ function App() {
 
   const handleOpenFile = async () => {
     if (!window.electronAPI) {
-      setPreloadError('Pegasus preload bridge failed to load. Please restart the app.');
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const filePath = await window.electronAPI.selectFile();
@@ -127,7 +128,7 @@ function App() {
 
   const handleOpenPgs = async () => {
     if (!window.electronAPI) {
-      setPreloadError('Pegasus preload bridge failed to load. Please restart the app.');
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const filePath = await window.electronAPI.selectPgsFile();
@@ -137,7 +138,7 @@ function App() {
 
   const toggleTheme = async () => {
     if (!window.electronAPI) {
-      setPreloadError('Pegasus preload bridge failed to load. Please restart the app.');
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const next = !isDark;
@@ -206,7 +207,7 @@ function App() {
         <aside className="pegasus-sidebar w-[220px] border-r border-border bg-surface py-5">
           <div className="px-4 pb-3">
             <button type="button" onClick={goHome} className="flex w-full items-center gap-2 text-left">
-              <img src={sidebarIcon} alt="Pegasus icon" className="h-5 w-5" />
+              <img src={sidebarIcon} alt={`${BRAND_NAME} icon`} className="h-5 w-5" />
             </button>
           </div>
 
@@ -238,7 +239,7 @@ function App() {
           </nav>
 
           <div className="mt-auto flex flex-col items-center border-t border-border px-4 py-3 text-center">
-            <img src={sidebarLogo} alt="Pegasus" className="mb-3 h-20 w-auto" />
+            <img src={sidebarLogo} alt={BRAND_NAME} className="mb-3 h-20 w-auto" />
             <img src={lingoLogo} alt="Lingo.dev" className="mb-2 h-20 w-auto" />
             <div className="text-xs text-textTertiary">v1.0.0</div>
           </div>

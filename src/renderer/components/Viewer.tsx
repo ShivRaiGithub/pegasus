@@ -4,6 +4,7 @@ import type { OpenFileState, PageTextMap } from '../types/pgs';
 import FallbackModal from './FallbackModal';
 import PDFViewer from './PDFViewer.tsx';
 import { appAsset } from '../utils/assets';
+import { BRAND_NAME } from '../utils/brand';
 
 interface ViewerProps {
   openFile: OpenFileState;
@@ -407,7 +408,7 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
         <div className="mb-4 space-y-3">
           <div className="rounded-xl border border-border bg-surface px-6 py-7 text-center shadow-sm">
             <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight">
-              <img src={appAsset('/pegasusIcon.svg')} alt="Pegasus icon" className="h-7 w-7" />
+              <img src={appAsset('/pegasusIcon.svg')} alt={`${BRAND_NAME} icon`} className="h-7 w-7" />
             </div>
             <h2 className="text-xl font-semibold text-textPrimary">{openFile.fileName}</h2>
             <p className="mt-1 text-xs text-textTertiary">.pgs Language Passport</p>

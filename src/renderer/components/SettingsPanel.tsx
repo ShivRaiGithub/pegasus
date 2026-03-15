@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BRAND_NAME } from '../utils/brand';
 
 interface SettingsPanelProps {
   isDark: boolean;
@@ -46,7 +47,9 @@ function SettingsPanel({ isDark, onSavedApiKey, onClearedRecent, onToggleTheme }
       <div className="mb-8">
         <p className="pegasus-section-label">General Settings</p>
         <h1 className="mt-2 text-[32px] font-bold text-textPrimary">API Configuration</h1>
-        <p className="mt-1 text-sm text-textSecondary">Manage your Pegasus preferences and translation credentials</p>
+        <p className="mt-1 text-sm text-textSecondary">
+          {`Manage your ${BRAND_NAME} preferences and translation credentials`}
+        </p>
       </div>
 
       <div className="space-y-6">
@@ -105,7 +108,7 @@ function SettingsPanel({ isDark, onSavedApiKey, onClearedRecent, onToggleTheme }
             <div className="flex items-center justify-between px-4 py-4">
               <div>
                 <p className="text-sm font-medium text-textPrimary">App Version</p>
-                <p className="text-xs text-textSecondary">Installed Pegasus build</p>
+                <p className="text-xs text-textSecondary">{`Installed ${BRAND_NAME} build`}</p>
               </div>
               <p className="text-sm text-textSecondary">{version || '—'}</p>
             </div>
@@ -134,7 +137,7 @@ function SettingsPanel({ isDark, onSavedApiKey, onClearedRecent, onToggleTheme }
         {status ? <p className="text-sm text-success">{status}</p> : null}
 
         <div className="pt-2 text-xs text-textTertiary">
-          <p>Pegasus v1.0.0</p>
+          <p>{`${BRAND_NAME} v1.0.0`}</p>
           <p className="mt-1">Powered by Lingo.dev</p>
         </div>
       </div>

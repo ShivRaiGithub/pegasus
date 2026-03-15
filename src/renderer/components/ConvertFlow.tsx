@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { BRAND_NAME } from '../utils/brand';
 
 interface ConvertFlowProps {
   filePath: string;
@@ -91,7 +92,7 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
 
   const startTranslation = async () => {
     if (!window.electronAPI) {
-      setErrorMessage('Pegasus preload bridge is unavailable.');
+      setErrorMessage(`${BRAND_NAME} preload bridge is unavailable.`);
       return;
     }
 

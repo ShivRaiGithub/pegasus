@@ -15978,6 +15978,7 @@ function appAsset(path) {
   }
   return new URL(`.${path}`, window.location.href).toString();
 }
+const BRAND_NAME = String.fromCharCode(80, 101, 103, 97, 115, 117, 115);
 const languageLabelMap = {
   en: "English",
   fr: "French",
@@ -16031,7 +16032,7 @@ function HomeScreen({
 }) {
   const {
     t
-  } = useTranslation(["7abbc4be4f8f", "69a457b8223c", "f147c441b753", "1816be90c4a3", "5a9a91fa6fe7", "6145d7d8df9b", "e8ed71b45648", "cad60271ef78", "dd703bd340fc"]);
+  } = useTranslation(["7abbc4be4f8f", "69a457b8223c", "f147c441b753", "1816be90c4a3", "e8ed71b45648", "cad60271ef78", "dd703bd340fc"]);
   const showHomeHero = mode === "home";
   const hasRecent = recentFiles.length > 0;
   const selectedHomeLanguage = selectedLanguage === "original" ? "en" : selectedLanguage;
@@ -16051,8 +16052,8 @@ function HomeScreen({
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textTertiary", children: t("1816be90c4a3", "Supports DOCX, TXT, PDF") })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center rounded-2xl", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: heroLogo, alt: t("5a9a91fa6fe7", "Pegasus logo"), className: "w-[75%] min-w-[220px] max-w-[340px]" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "mt-3 text-[36px] font-bold tracking-tight text-textPrimary", children: t("6145d7d8df9b", "Pegasus") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center rounded-2xl", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: heroLogo, alt: `${BRAND_NAME} logo`, className: "w-[75%] min-w-[220px] max-w-[340px]" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "mt-3 text-[36px] font-bold tracking-tight text-textPrimary", children: BRAND_NAME }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-textSecondary", children: t("e8ed71b45648", "Your document's Language Passport") })
       ] })
     ] }) }) : null,
@@ -53056,7 +53057,7 @@ function Viewer({
 }) {
   const {
     t
-  } = useTranslation(["99bc616b9cfc", "1994ce7a2c06", "888b35f14321", "dad7754f1c72", "e363b2063893"]);
+  } = useTranslation(["99bc616b9cfc", "888b35f14321", "dad7754f1c72", "e363b2063893"]);
   const [isLoading, setIsLoading] = reactExports.useState(false);
   const [errorMessage, setErrorMessage] = reactExports.useState(null);
   const docxOriginalLayerRef = reactExports.useRef(null);
@@ -53327,7 +53328,7 @@ function Viewer({
     openFile.type === "regular" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "-mx-6 mb-4 flex items-center justify-end border-b border-border bg-surface px-6 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onConvertToPgs, className: "rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accentHover", children: t("99bc616b9cfc", "Create Language Passport") }) }) : null,
     openFile.type === "pgs" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-4 space-y-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface px-6 py-7 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: t("1994ce7a2c06", "Pegasus icon"), className: "h-7 w-7" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: `${BRAND_NAME} icon`, className: "h-7 w-7" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-textPrimary", children: openFile.fileName }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-textTertiary", children: t("888b35f14321", ".pgs Language Passport") }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-auto my-4 h-px w-24 bg-border" }),
@@ -53483,7 +53484,7 @@ function ConvertFlow({
   };
   const startTranslation = async () => {
     if (!window.electronAPI) {
-      setErrorMessage("Pegasus preload bridge is unavailable.");
+      setErrorMessage(`${BRAND_NAME} preload bridge is unavailable.`);
       return;
     }
     if (!apiKey.trim()) {
@@ -53652,7 +53653,7 @@ function SettingsPanel({
 }) {
   const {
     t
-  } = useTranslation(["f05f43127a03", "5db67d802b5d", "45dd5183faa2", "5db67d802b5d", "61e1dbc8697a", "437c008d0fd5", "d234dade2cf2", "6eddea22a854", "724f51ca3b98", "0b4ac4742a44", "8ba33ebfa3d3", "5dde0a8d98df", "f0de994f742f", "bede6ea13acc", "a1b76a677703", "f887b4a12946", "c84a40c75229", "f419fed8a1c9", "ebeb27965aab", "d4d6d094b32e", "2e864a93190a"]);
+  } = useTranslation(["f05f43127a03", "5db67d802b5d", "5db67d802b5d", "61e1dbc8697a", "437c008d0fd5", "d234dade2cf2", "6eddea22a854", "724f51ca3b98", "0b4ac4742a44", "8ba33ebfa3d3", "5dde0a8d98df", "f0de994f742f", "a1b76a677703", "f887b4a12946", "c84a40c75229", "f419fed8a1c9", "ebeb27965aab", "2e864a93190a"]);
   const [apiKey, setApiKey] = reactExports.useState("");
   const [version2, setVersion] = reactExports.useState("");
   const [status, setStatus] = reactExports.useState(null);
@@ -53682,7 +53683,7 @@ function SettingsPanel({
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "pegasus-section-label", children: t("f05f43127a03", "General Settings") }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "mt-2 text-[32px] font-bold text-textPrimary", children: t("5db67d802b5d", "API Configuration") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: t("45dd5183faa2", "Manage your Pegasus preferences and translation credentials") })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm text-textSecondary", children: `Manage your ${BRAND_NAME} preferences and translation credentials` })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface p-6 shadow-sm", children: [
@@ -53710,7 +53711,7 @@ function SettingsPanel({
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-4 py-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-textPrimary", children: t("f0de994f742f", "App Version") }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: t("bede6ea13acc", "Installed Pegasus build") })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-textSecondary", children: `Installed ${BRAND_NAME} build` })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-textSecondary", children: version2 || "—" })
           ] })
@@ -53729,7 +53730,7 @@ function SettingsPanel({
       ] }),
       status ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-success", children: status }) : null,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-2 text-xs text-textTertiary", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: t("d4d6d094b32e", "Pegasus v1.0.0") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: `${BRAND_NAME} v1.0.0` }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1", children: t("2e864a93190a", "Powered by Lingo.dev") })
       ] })
     ] })
@@ -53743,7 +53744,7 @@ function baseName(filePath) {
 function App() {
   const {
     t
-  } = useTranslation(["283173007591", "9d3d52cd3cee", "bbed7f7fa9d2", "fb5a6187ea42", "4d03b9a6b60f", "72ec37182fc8", "6a163e2e315e"]);
+  } = useTranslation(["9d3d52cd3cee", "bbed7f7fa9d2", "fb5a6187ea42", "72ec37182fc8", "6a163e2e315e"]);
   const {
     setLocale
   } = useLingoContext();
@@ -53759,7 +53760,7 @@ function App() {
   reactExports.useEffect(() => {
     const loadInitialState = async () => {
       if (!window.electronAPI) {
-        setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
+        setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
         return;
       }
       const [savedApiKey, theme, pendingOpenPath, savedRecent] = await Promise.all([window.electronAPI.getApiKey(), window.electronAPI.getTheme(), window.electronAPI.openPgsFilePath(), window.electronAPI.getRecentFiles()]);
@@ -53791,7 +53792,7 @@ function App() {
   }, [selectedLanguage, setLocale]);
   const openFromPath = async (filePath) => {
     if (!window.electronAPI) {
-      setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     if (filePath.toLowerCase().endsWith(".pgs")) {
@@ -53821,7 +53822,7 @@ function App() {
   };
   const handleOpenFile = async () => {
     if (!window.electronAPI) {
-      setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const filePath = await window.electronAPI.selectFile();
@@ -53830,7 +53831,7 @@ function App() {
   };
   const handleOpenPgs = async () => {
     if (!window.electronAPI) {
-      setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const filePath = await window.electronAPI.selectPgsFile();
@@ -53839,7 +53840,7 @@ function App() {
   };
   const toggleTheme = async () => {
     if (!window.electronAPI) {
-      setPreloadError("Pegasus preload bridge failed to load. Please restart the app.");
+      setPreloadError(`${BRAND_NAME} preload bridge failed to load. Please restart the app.`);
       return;
     }
     const next = !isDark;
@@ -53891,7 +53892,7 @@ function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-bg text-textPrimary", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-h-screen", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "pegasus-sidebar w-[220px] border-r border-border bg-surface py-5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: "flex w-full items-center gap-2 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarIcon, alt: t("283173007591", "Pegasus icon"), className: "h-5 w-5" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: "flex w-full items-center gap-2 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarIcon, alt: `${BRAND_NAME} icon`, className: "h-5 w-5" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "mt-2 space-y-0.5 px-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: `pegasus-nav-item ${activeSidebarItem === "home" ? "pegasus-nav-item-active" : ""}`, children: t("9d3d52cd3cee", "<span0>⌂</span0> Home", {
             span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
@@ -53904,7 +53905,7 @@ function App() {
           }) })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-auto flex flex-col items-center border-t border-border px-4 py-3 text-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarLogo, alt: t("4d03b9a6b60f", "Pegasus"), className: "mb-3 h-20 w-auto" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarLogo, alt: BRAND_NAME, className: "mb-3 h-20 w-auto" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: lingoLogo, alt: t("72ec37182fc8", "Lingo.dev"), className: "mb-2 h-20 w-auto" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-textTertiary", children: t("6a163e2e315e", "v1.0.0") })
         ] })
