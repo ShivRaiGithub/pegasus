@@ -20,6 +20,15 @@ Pegasus is an Electron desktop app for viewing and translating documents into mu
 - Lingo SDK runtime translation (`@lingo.dev/_sdk`)
 - `docx-preview` (DOCX view), `pdfjs-dist` legacy renderer (PDF view)
 
+## How Pegasus Works
+
+1. User opens a source file (`DOCX`, `PDF`, `TXT`) or existing `.pgs`
+2. Main process extracts chunked text + structure metadata
+3. Selected languages are translated chunk-by-chunk
+4. Content is reconstructed and saved into a `.pgs` package
+5. Renderer displays translated content by selected language
+
+
 ## Project Structure
 
 ```text
@@ -104,14 +113,6 @@ For Lingo Compiler extraction, user-visible text should be written directly in J
 
 Prefer conditional JSX blocks instead of string ternaries when the text is translatable.
 
-## How Pegasus Works
-
-1. User opens a source file (`DOCX`, `PDF`, `TXT`) or existing `.pgs`
-2. Main process extracts chunked text + structure metadata
-3. Selected languages are translated chunk-by-chunk
-4. Content is reconstructed and saved into a `.pgs` package
-5. Renderer displays translated content by selected language
-
 ## `.pgs` Format Notes
 
 - Version currently supported: `1.1`
@@ -131,7 +132,3 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
 
 - **Preload bridge missing error**  
   Restart the app and make sure `src/main/preload.ts` is built correctly via `npm run build`.
-
-## License
-
-Private/internal project.
