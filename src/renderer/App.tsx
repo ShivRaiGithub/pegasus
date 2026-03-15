@@ -197,6 +197,8 @@ function App() {
   };
 
   const sidebarLogo = isDark ? appAsset('/pegasusLogo-Dark.png') : appAsset('/pegasusLogo-Light.png');
+  const sidebarIcon = appAsset('/pegasusIcon.svg');
+  const lingoLogo = appAsset('/lingodev.png');
 
   return (
     <div className="min-h-screen bg-bg text-textPrimary">
@@ -204,7 +206,7 @@ function App() {
         <aside className="pegasus-sidebar w-[220px] border-r border-border bg-surface py-5">
           <div className="px-4 pb-3">
             <button type="button" onClick={goHome} className="flex w-full items-center gap-2 text-left">
-              <img src={sidebarLogo} alt="Pegasus" className="h-6 w-auto" />
+              <img src={sidebarIcon} alt="Pegasus icon" className="h-5 w-5" />
             </button>
           </div>
 
@@ -235,7 +237,11 @@ function App() {
             </button>
           </nav>
 
-          <div className="mt-auto border-t border-border px-4 py-3 text-xs text-textTertiary">v1.0.0</div>
+          <div className="mt-auto flex flex-col items-center border-t border-border px-4 py-3 text-center">
+            <img src={sidebarLogo} alt="Pegasus" className="mb-3 h-20 w-auto" />
+            <img src={lingoLogo} alt="Lingo.dev" className="mb-2 h-20 w-auto" />
+            <div className="text-xs text-textTertiary">v1.0.0</div>
+          </div>
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -269,6 +275,7 @@ function App() {
                 onOpenRecent={(filePath) => void openFromPath(filePath)}
                 selectedLanguage={selectedLanguage}
                 onLanguageChange={handleLanguageChange}
+                isDark={isDark}
                 preloadError={preloadError}
                 mode={homeSection}
               />

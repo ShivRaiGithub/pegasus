@@ -58,7 +58,6 @@ function FallbackModal({
 
           <div className="rounded-xl border border-border bg-bg p-4">
             <div className="mb-2 inline-flex items-center gap-2 text-sm font-medium text-textPrimary">
-              <span className="text-base text-textSecondary">🌐</span>
               View in another language
             </div>
             <div className="flex flex-wrap gap-2">
@@ -80,7 +79,6 @@ function FallbackModal({
             onClick={onViewOriginal}
             className="flex w-full items-center gap-2 rounded-xl border border-border bg-bg px-4 py-3 text-sm font-medium text-textPrimary transition hover:border-accent"
           >
-            <span className="text-base text-textSecondary">📄</span>
             View original
           </button>
         </div>

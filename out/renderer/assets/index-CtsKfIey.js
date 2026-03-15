@@ -16024,32 +16024,38 @@ function HomeScreen({
   onOpenRecent,
   selectedLanguage,
   onLanguageChange,
+  isDark,
   preloadError,
   recentFiles,
   mode
 }) {
   const {
     t
-  } = useTranslation(["fdc61ffae7b3", "6145d7d8df9b", "e8ed71b45648", "7abbc4be4f8f", "69a457b8223c", "f147c441b753", "2afff3c63fea", "cad60271ef78", "dd703bd340fc"]);
+  } = useTranslation(["7abbc4be4f8f", "69a457b8223c", "f147c441b753", "1816be90c4a3", "5a9a91fa6fe7", "6145d7d8df9b", "e8ed71b45648", "cad60271ef78", "dd703bd340fc"]);
   const showHomeHero = mode === "home";
   const hasRecent = recentFiles.length > 0;
   const selectedHomeLanguage = selectedLanguage === "original" ? "en" : selectedLanguage;
+  const heroLogo = isDark ? appAsset("/pegasusLogo-Dark.png") : appAsset("/pegasusLogo-Light.png");
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "mx-auto w-full max-w-6xl px-8 py-10", children: [
-    showHomeHero ? /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mx-auto mt-8 flex w-full max-w-[520px] flex-col items-center rounded-xl border border-border bg-surface px-8 py-10 text-center shadow-sm", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: appAsset("/pegasusIcon.svg"), alt: t("fdc61ffae7b3", "Pegasus icon"), className: "h-7 w-7" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-[26px] font-bold tracking-tight text-textPrimary", children: t("6145d7d8df9b", "Pegasus") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-textSecondary", children: t("e8ed71b45648", "Your document's Language Passport") }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-5 w-full text-left", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary", children: t("7abbc4be4f8f", "Language") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: selectedHomeLanguage, onChange: (event) => onLanguageChange(event.target.value), className: "h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: uiLanguageOptions.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap[lang] ?? lang.toUpperCase() }, lang)) })
+    showHomeHero ? /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "mx-auto mt-8 w-full max-w-[860px] rounded-xl border border-border bg-surface px-8 py-10 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-8 md:grid-cols-2 md:items-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full text-left", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary", children: t("7abbc4be4f8f", "Language") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: selectedHomeLanguage, onChange: (event) => onLanguageChange(event.target.value), className: "h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: uiLanguageOptions.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: lang, children: languageLabelMap[lang] ?? lang.toUpperCase() }, lang)) })
+        ] }),
+        preloadError ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 w-full space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenFile, className: "w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover", children: t("69a457b8223c", "Open Document") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenPgs, className: "w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface", children: t("f147c441b753", "Open .pgs file") })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textTertiary", children: t("1816be90c4a3", "Supports DOCX, TXT, PDF") })
       ] }),
-      preloadError ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-5 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error", children: preloadError }) : null,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-7 w-full space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenFile, className: "w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover", children: t("69a457b8223c", "Open Document") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onOpenPgs, className: "w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface", children: t("f147c441b753", "Open .pgs file") })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-xs text-textTertiary", children: t("2afff3c63fea", "Supports DOCX, TXT, PDF, PPTX") })
-    ] }) : null,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "inline-flex items-center justify-center rounded-2xl", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: heroLogo, alt: t("5a9a91fa6fe7", "Pegasus logo"), className: "w-[75%] min-w-[220px] max-w-[340px]" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "mt-3 text-[36px] font-bold tracking-tight text-textPrimary", children: t("6145d7d8df9b", "Pegasus") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm text-textSecondary", children: t("e8ed71b45648", "Your document's Language Passport") })
+      ] })
+    ] }) }) : null,
     /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: `mx-auto w-full max-w-[760px] ${showHomeHero ? "mt-8" : "mt-4"}`, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "pegasus-section-label mb-3", children: t("cad60271ef78", "Recent Files") }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-surface", children: [
@@ -22394,7 +22400,7 @@ function FallbackModal({
 }) {
   const {
     t
-  } = useTranslation(["3c8c7e60b849", "3e97422b017d", "232bb729aa7e", "0036d65eeebc", "888123ad51c6", "db1d1668bd58", "bc43c86677b0", "d0198478685a"]);
+  } = useTranslation(["3c8c7e60b849", "3e97422b017d", "232bb729aa7e", "0036d65eeebc", "888123ad51c6", "75739d9297b5", "6013634d8e81", "d0198478685a"]);
   const name = languageNameMap$1[missingLanguage] ?? missingLanguage.toUpperCase();
   const alternateLanguages = availableLanguages;
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[460px] rounded-2xl border border-border bg-surface p-7 shadow-[0_20px_60px_rgba(0,0,0,0.15)]", children: [
@@ -22411,14 +22417,10 @@ function FallbackModal({
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { "aria-hidden": "true", children: t("888123ad51c6", "›") })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-border bg-bg p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 inline-flex items-center gap-2 text-sm font-medium text-textPrimary", children: t("db1d1668bd58", "<span0>🌐</span0> View in another language", {
-          span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-base text-textSecondary", children: chunks })
-        }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-2 inline-flex items-center gap-2 text-sm font-medium text-textPrimary", children: t("75739d9297b5", "View in another language") }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-2", children: alternateLanguages.map((lang) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => onSelectLanguage(lang), className: "rounded-full border border-border bg-white px-3 py-1 text-xs font-medium text-textSecondary transition hover:border-accent hover:text-accent dark:bg-surface", children: languageNameMap$1[lang] ?? lang.toUpperCase() }, lang)) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "flex w-full items-center gap-2 rounded-xl border border-border bg-bg px-4 py-3 text-sm font-medium text-textPrimary transition hover:border-accent", children: t("bc43c86677b0", "<span0>📄</span0> View original", {
-        span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-base text-textSecondary", children: chunks })
-      }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "flex w-full items-center gap-2 rounded-xl border border-border bg-bg px-4 py-3 text-sm font-medium text-textPrimary transition hover:border-accent", children: t("6013634d8e81", "View original") })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: onViewOriginal, className: "mt-5 w-full text-center text-sm text-textTertiary transition hover:text-textSecondary", children: t("d0198478685a", "Dismiss") })
   ] }) });
@@ -53725,7 +53727,7 @@ function baseName(filePath) {
 function App() {
   const {
     t
-  } = useTranslation(["4d03b9a6b60f", "9d3d52cd3cee", "bbed7f7fa9d2", "fb5a6187ea42", "6a163e2e315e"]);
+  } = useTranslation(["283173007591", "9d3d52cd3cee", "bbed7f7fa9d2", "fb5a6187ea42", "4d03b9a6b60f", "72ec37182fc8", "6a163e2e315e"]);
   const {
     setLocale
   } = useLingoContext();
@@ -53868,10 +53870,12 @@ function App() {
     await handleOpenPgs();
   };
   const sidebarLogo = isDark ? appAsset("/pegasusLogo-Dark.png") : appAsset("/pegasusLogo-Light.png");
+  const sidebarIcon = appAsset("/pegasusIcon.svg");
+  const lingoLogo = appAsset("/lingodev.png");
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-bg text-textPrimary", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-h-screen", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "pegasus-sidebar w-[220px] border-r border-border bg-surface py-5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: "flex w-full items-center gap-2 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarLogo, alt: t("4d03b9a6b60f", "Pegasus"), className: "h-6 w-auto" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: "flex w-full items-center gap-2 text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarIcon, alt: t("283173007591", "Pegasus icon"), className: "h-5 w-5" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "mt-2 space-y-0.5 px-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: goHome, className: `pegasus-nav-item ${activeSidebarItem === "home" ? "pegasus-nav-item-active" : ""}`, children: t("9d3d52cd3cee", "<span0>⌂</span0> Home", {
             span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
@@ -53883,13 +53887,17 @@ function App() {
             span0: (chunks) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex h-4 w-4 items-center justify-center", children: chunks })
           }) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-auto border-t border-border px-4 py-3 text-xs text-textTertiary", children: t("6a163e2e315e", "v1.0.0") })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-auto flex flex-col items-center border-t border-border px-4 py-3 text-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: sidebarLogo, alt: t("4d03b9a6b60f", "Pegasus"), className: "mb-3 h-20 w-auto" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: lingoLogo, alt: t("72ec37182fc8", "Lingo.dev"), className: "mb-2 h-20 w-auto" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-textTertiary", children: t("6a163e2e315e", "v1.0.0") })
+        ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex min-w-0 flex-1 flex-col", children: [
         currentScreen === "viewer" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { openFile, selectedLanguage, onLanguageChange: handleLanguageChange, isDark, onToggleTheme: toggleTheme }) : null,
         currentScreen === "convert" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { openFile, selectedLanguage, onLanguageChange: handleLanguageChange, isDark, onToggleTheme: toggleTheme, mode: "convert" }) : null,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-          currentScreen === "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx(HomeScreen, { recentFiles, onOpenFile: () => void openDocumentAndReset(), onOpenPgs: () => void openPgsAndReset(), onOpenRecent: (filePath) => void openFromPath(filePath), selectedLanguage, onLanguageChange: handleLanguageChange, preloadError, mode: homeSection }) : null,
+          currentScreen === "home" ? /* @__PURE__ */ jsxRuntimeExports.jsx(HomeScreen, { recentFiles, onOpenFile: () => void openDocumentAndReset(), onOpenPgs: () => void openPgsAndReset(), onOpenRecent: (filePath) => void openFromPath(filePath), selectedLanguage, onLanguageChange: handleLanguageChange, isDark, preloadError, mode: homeSection }) : null,
           currentScreen === "viewer" && openFile ? /* @__PURE__ */ jsxRuntimeExports.jsx(Viewer, { openFile, selectedLanguage, isDark, onConvertToPgs: canConvert ? startConvertFlow : () => {
             setPreloadError("Translate now from .pgs is available after opening the original source document.");
           }, onSelectLanguage: handleLanguageChange }) : null,

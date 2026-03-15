@@ -6,6 +6,7 @@ interface HomeScreenProps {
   onOpenRecent: (filePath: string) => void;
   selectedLanguage: string;
   onLanguageChange: (lang: string) => void;
+  isDark: boolean;
   preloadError: string | null;
   recentFiles: string[];
   mode: 'home' | 'recent';
@@ -63,6 +64,7 @@ function HomeScreen({
   onOpenRecent,
   selectedLanguage,
   onLanguageChange,
+  isDark,
   preloadError,
   recentFiles,
   mode,
@@ -70,56 +72,63 @@ function HomeScreen({
   const showHomeHero = mode === 'home';
   const hasRecent = recentFiles.length > 0;
   const selectedHomeLanguage = selectedLanguage === 'original' ? 'en' : selectedLanguage;
+  const heroLogo = isDark ? appAsset('/pegasusLogo-Dark.png') : appAsset('/pegasusLogo-Light.png');
 
   return (
     <main className="mx-auto w-full max-w-6xl px-8 py-10">
       {showHomeHero ? (
-        <section className="mx-auto mt-8 flex w-full max-w-[520px] flex-col items-center rounded-xl border border-border bg-surface px-8 py-10 text-center shadow-sm">
-          <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accentLight">
-            <img src={appAsset('/pegasusIcon.svg')} alt="Pegasus icon" className="h-7 w-7" />
-          </div>
-          <h1 className="text-[26px] font-bold tracking-tight text-textPrimary">Pegasus</h1>
-          <p className="mt-2 text-sm text-textSecondary">Your document&apos;s Language Passport</p>
+        <section className="mx-auto mt-8 w-full max-w-[860px] rounded-xl border border-border bg-surface px-8 py-10 shadow-sm">
+          <div className="grid gap-8 md:grid-cols-2 md:items-center">
+            <div>
+              <div className="w-full text-left">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary">Language</label>
+                <select
+                  value={selectedHomeLanguage}
+                  onChange={(event) => onLanguageChange(event.target.value)}
+                  className="h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
+                >
+                  {uiLanguageOptions.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {languageLabelMap[lang] ?? lang.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="mt-5 w-full text-left">
-            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-textTertiary">Language</label>
-            <select
-              value={selectedHomeLanguage}
-              onChange={(event) => onLanguageChange(event.target.value)}
-              className="h-10 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg"
-            >
-              {uiLanguageOptions.map((lang) => (
-                <option key={lang} value={lang}>
-                  {languageLabelMap[lang] ?? lang.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </div>
+              {preloadError ? (
+                <div className="mt-4 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
+                  {preloadError}
+                </div>
+              ) : null}
 
-          {preloadError ? (
-            <div className="mt-5 w-full rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
-              {preloadError}
+              <div className="mt-6 w-full space-y-2">
+                <button
+                  type="button"
+                  onClick={onOpenFile}
+                  className="w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover"
+                >
+                  Open Document
+                </button>
+                <button
+                  type="button"
+                  onClick={onOpenPgs}
+                  className="w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface"
+                >
+                  Open .pgs file
+                </button>
+              </div>
+
+              <p className="mt-4 text-xs text-textTertiary">Supports DOCX, TXT, PDF</p>
             </div>
-          ) : null}
 
-          <div className="mt-7 w-full space-y-2">
-            <button
-              type="button"
-              onClick={onOpenFile}
-              className="w-full rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-accentHover"
-            >
-              Open Document
-            </button>
-            <button
-              type="button"
-              onClick={onOpenPgs}
-              className="w-full rounded-lg border border-border bg-white px-5 py-2.5 text-sm font-medium text-textPrimary transition hover:bg-cardHover dark:bg-surface"
-            >
-              Open .pgs file
-            </button>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center rounded-2xl">
+                <img src={heroLogo} alt="Pegasus logo" className="w-[75%] min-w-[220px] max-w-[340px]" />
+              </div>
+              <h1 className="mt-3 text-[36px] font-bold tracking-tight text-textPrimary">Pegasus</h1>
+              <p className="mt-2 text-sm text-textSecondary">Your document&apos;s Language Passport</p>
+            </div>
           </div>
-
-          <p className="mt-4 text-xs text-textTertiary">Supports DOCX, TXT, PDF, PPTX</p>
         </section>
       ) : null}
 
