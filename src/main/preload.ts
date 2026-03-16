@@ -12,7 +12,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     filePath: string;
     languages: string[];
     apiKey: string;
-    instructions?: string;
     outputDir: string;
   }) => ipcRenderer.invoke('convert-to-pgs', options),
   getApiKey: () => ipcRenderer.invoke('get-api-key'),

@@ -19,7 +19,6 @@ interface ConvertOptions {
   filePath: string;
   languages: string[];
   apiKey: string;
-  instructions?: string;
   outputDir: string;
 }
 
@@ -131,7 +130,7 @@ ipcMain.handle('read-file', async (_, filePath: string) => extractText(filePath)
 ipcMain.handle('read-pgs-file', async (_, filePath: string) => readPgsFile(filePath));
 
 ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
-  const { filePath, languages, apiKey, instructions, outputDir } = options;
+  const { filePath, languages, apiKey, outputDir } = options;
   let tmpPathToClean: string | null = null;
 
   try {
@@ -177,7 +176,6 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
           extractedContent.texts,
           lang,
           apiKey,
-          instructions,
           (current, total) => {
             event.sender.send('translation-status', {
               phase: 'translating',

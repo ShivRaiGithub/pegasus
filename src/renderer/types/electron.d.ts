@@ -14,7 +14,6 @@ interface ConvertToPgsOptions {
   filePath: string;
   languages: string[];
   apiKey: string;
-  instructions?: string;
   outputDir: string;
 }
 

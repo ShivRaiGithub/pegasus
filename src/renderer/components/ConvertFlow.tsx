@@ -40,7 +40,6 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
-  const [instructions, setInstructions] = useState('');
   const [outputDir, setOutputDir] = useState('');
   const [states, setStates] = useState<Record<string, TranslationState>>({});
   const [resultPath, setResultPath] = useState<string | null>(null);
@@ -141,7 +140,6 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
       filePath,
       languages: selectedLanguages,
       apiKey,
-      instructions,
       outputDir,
     });
 
@@ -274,16 +272,6 @@ function ConvertFlow({ filePath, fileName, onComplete, onCancel }: ConvertFlowPr
                   {showApiKey ? <>Hide</> : <>Show</>}
                 </button>
               </div>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-textPrimary">Instructions (optional)</label>
-              <textarea
-                value={instructions}
-                onChange={(event) => setInstructions(event.target.value)}
-                placeholder="e.g. Do not translate proper nouns, keep brand names in English"
-                className="h-28 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg"
-              />
             </div>
 
             <div>

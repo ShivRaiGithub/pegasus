@@ -4,7 +4,6 @@ export async function translateChunks(
   chunks: string[],
   targetLocale: string,
   apiKey: string,
-  instructions?: string,
   onProgress?: (current: number, total: number) => void,
 ): Promise<string[]> {
   if (!apiKey.trim()) {
@@ -22,10 +21,6 @@ export async function translateChunks(
       sourceLocale: 'en',
       targetLocale,
     };
-
-    if (instructions?.trim()) {
-      options.instructions = instructions.trim();
-    }
 
     const translatedObject = await (lingoDotDev as any).localizeObject({ chunks }, options);
 

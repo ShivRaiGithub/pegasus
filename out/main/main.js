@@ -153,7 +153,7 @@ async function readPgsFile(filePath) {
   }
   return parsed;
 }
-async function translateChunks(chunks, targetLocale, apiKey, instructions, onProgress) {
+async function translateChunks(chunks, targetLocale, apiKey, onProgress) {
   if (!apiKey.trim()) {
     throw new Error("A valid Lingo.dev API key is required.");
   }
@@ -166,9 +166,6 @@ async function translateChunks(chunks, targetLocale, apiKey, instructions, onPro
       sourceLocale: "en",
       targetLocale
     };
-    if (instructions?.trim()) {
-      options.instructions = instructions.trim();
-    }
     const translatedObject = await lingoDotDev.localizeObject({ chunks }, options);
     const translated = Array.isArray(translatedObject?.chunks) ? translatedObject.chunks.map(
       (value, index) => typeof value === "string" && value.trim().length > 0 ? value : chunks[index]
@@ -263,7 +260,7 @@ ipcMain.handle("select-folder", async () => {
 ipcMain.handle("read-file", async (_, filePath) => extractText(filePath));
 ipcMain.handle("read-pgs-file", async (_, filePath) => readPgsFile(filePath));
 ipcMain.handle("convert-to-pgs", async (event, options) => {
-  const { filePath, languages, apiKey, instructions, outputDir } = options;
+  const { filePath, languages, apiKey, outputDir } = options;
   let tmpPathToClean = null;
   try {
     let originalType;
@@ -302,7 +299,6 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
           extractedContent.texts,
           lang,
           apiKey,
-          instructions,
           (current, total) => {
             event.sender.send("translation-status", {
               phase: "translating",

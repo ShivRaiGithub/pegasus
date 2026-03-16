@@ -53502,12 +53502,11 @@ function ConvertFlow({
 }) {
   const {
     t
-  } = useTranslation(["230dc62879b9", "774ba471eae0", "cda03258f841", "37eee0ecf487", "344fcc886eba", "2876a6eea5a1", "d1f15e601bd7", "d3d7cf59c994", "08a7070013b3", "ec45d3e4d023", "f9cbc87740fb", "53cbc78e34d8", "4de76ee708a8", "6eb94e81ba89", "e57cf7e69bef", "6ea02f08bc31", "cba5a612e465", "e80cb97e0c2b", "37973249f8ca", "2328f924b34e", "be236e3834b4", "d2561aea2fc6", "f56f5f608c2a", "8feb12985aa0"]);
+  } = useTranslation(["230dc62879b9", "774ba471eae0", "cda03258f841", "37eee0ecf487", "344fcc886eba", "2876a6eea5a1", "d1f15e601bd7", "d3d7cf59c994", "08a7070013b3", "ec45d3e4d023", "f9cbc87740fb", "6eb94e81ba89", "e57cf7e69bef", "6ea02f08bc31", "cba5a612e465", "e80cb97e0c2b", "37973249f8ca", "2328f924b34e", "be236e3834b4", "d2561aea2fc6", "f56f5f608c2a", "8feb12985aa0"]);
   const [step, setStep] = reactExports.useState(1);
   const [selectedLanguages, setSelectedLanguages] = reactExports.useState([]);
   const [apiKey, setApiKey] = reactExports.useState("");
   const [showApiKey, setShowApiKey] = reactExports.useState(false);
-  const [instructions, setInstructions] = reactExports.useState("");
   const [outputDir, setOutputDir] = reactExports.useState("");
   const [states, setStates] = reactExports.useState({});
   const [resultPath, setResultPath] = reactExports.useState(null);
@@ -53599,7 +53598,6 @@ function ConvertFlow({
       filePath,
       languages: selectedLanguages,
       apiKey,
-      instructions,
       outputDir
     });
     unsubStatus();
@@ -53658,10 +53656,6 @@ function ConvertFlow({
             /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: showApiKey ? "text" : "password", value: apiKey, onChange: (event) => setApiKey(event.target.value), className: "h-11 w-full rounded-lg border border-border bg-white px-3 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowApiKey((value) => !value), className: "h-11 rounded-lg border border-border bg-white px-3 text-sm text-textPrimary dark:bg-bg", children: showApiKey ? /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: t("ec45d3e4d023", "Hide") }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: t("f9cbc87740fb", "Show") }) })
           ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm font-medium text-textPrimary", children: t("53cbc78e34d8", "Instructions (optional)") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: instructions, onChange: (event) => setInstructions(event.target.value), placeholder: t("4de76ee708a8", "e.g. Do not translate proper nouns, keep brand names in English"), className: "h-28 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-textPrimary focus:border-accent focus:outline-none dark:bg-bg" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "mb-2 block text-sm font-medium text-textPrimary", children: t("6eb94e81ba89", "Output folder") }),
