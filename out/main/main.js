@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ipcMain, dialog, app, BrowserWindow } from "electron";
 import Store from "electron-store";
+import { pathToFileURL } from "node:url";
 import mammoth from "mammoth";
 import "docx";
 import { LingoDotDevEngine } from "@lingo.dev/_sdk";
@@ -36,7 +37,8 @@ async function extractPdf(filePath) {
     });
   }
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  pdfjs.GlobalWorkerOptions.workerSrc = require2.resolve("pdfjs-dist/legacy/build/pdf.worker.mjs");
+  const pdfWorkerPath = require2.resolve("pdfjs-dist/legacy/build/pdf.worker.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(pdfWorkerPath).href;
   const buffer = await fs.promises.readFile(filePath);
   const data = new Uint8Array(buffer);
   const document = await pdfjs.getDocument({ data, useSystemFonts: true }).promise;

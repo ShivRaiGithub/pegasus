@@ -1,6 +1,6 @@
 # Pegasus
 
-Pegasus is an Electron desktop app for viewing and translating documents into multilingual `.pgs` Language Passport files.
+Pegasus is an desktop app for viewing and translating documents into multilingual `.pgs` Language Passport files.
 
 ## Highlights
 
@@ -34,17 +34,18 @@ Pegasus is an Electron desktop app for viewing and translating documents into mu
 For UI translation generation (`LINGO_BUILD_MODE=translate`), configure your Lingo compiler API key in environment variables as required by your Lingo.dev setup.
 
 ## Setup
+```bash
+git clone https://github.com/ShivRaiGithub/pegasus.git
+cd pegasus
+```
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 
 ## Scripts
 
 ```bash
-# Start Electron app in dev mode
-npm run dev
-
 # Build main + preload + renderer (default cache-only localization build)
 npm run build
 
@@ -105,7 +106,7 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
 
 ## `.pgs` Format Notes
 
-- Version currently supported: `1.1`
+- Version currently supported: `1.0`
 - Stores:
   - original file payload (`original`)
   - translated payloads keyed by locale (`fr`, `es`, etc.)

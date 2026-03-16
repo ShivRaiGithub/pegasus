@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import mammoth from 'mammoth';
 
 export interface PdfTextItem {
@@ -64,7 +65,8 @@ async function extractPdf(filePath: string): Promise<ExtractedContent> {
   }
 
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
-  pdfjs.GlobalWorkerOptions.workerSrc = require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+  const pdfWorkerPath = require.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(pdfWorkerPath).href;
 
   const buffer = await fs.promises.readFile(filePath);
   const data = new Uint8Array(buffer);
