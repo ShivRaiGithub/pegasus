@@ -125,4 +125,4 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
   Restart the app and make sure `src/main/preload.ts` is built correctly via `npm run build`.
 
 
-> NOTE: The app was built and tested mostly on WSL (Linux environment). It might have issues on Windows and iOS
+> NOTE: The app was built and tested mostly on WSL (Linux environment). It was tested on windows too up to an extent, but not on iOS.
