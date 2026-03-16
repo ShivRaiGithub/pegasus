@@ -53,7 +53,6 @@ npm run build
 npm run start
 ```
 
-
 ## Localization Workflow (Lingo.dev)
 
 Pegasus uses Lingo Compiler in the renderer build.
@@ -68,7 +67,7 @@ Build modes:
 # Fast build using existing cache
 npm run build
 
-# Force translation generation and update public/translations/*.json
+# Force translation generation and update public/translations/*.json (Do this if you did a UI change)
 LINGO_BUILD_MODE=translate npm run build
 ```
 
@@ -111,18 +110,5 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
   - original file payload (`original`)
   - translated payloads keyed by locale (`fr`, `es`, etc.)
   - metadata (`originalType`, `storageFormat`, `createdAt`, `availableLanguages`)
-
-## Troubleshooting
-
-- **Hindi glyphs show as boxes**  
-  Ensure dependencies are installed and app rebuilt. Pegasus bundles `@fontsource/noto-sans-devanagari` for reliable Devanagari rendering.
-
-- **Some UI text not translated**  
-  Ensure text is directly in JSX and rerun:
-  `LINGO_BUILD_MODE=translate npm run build`
-
-- **Preload bridge missing error**  
-  Restart the app and make sure `src/main/preload.ts` is built correctly via `npm run build`.
-
 
 > NOTE: The app was built and tested mostly on WSL (Linux environment). It was tested on windows too up to an extent, but not on iOS.
