@@ -2,6 +2,13 @@
 
 Pegasus is an desktop app for viewing and translating documents into multilingual `.pgs` Language Passport files.
 
+## ScreenShots
+
+![Home Screen Dark](./screenshots/Screenshot%202026-03-16%20182717.png)
+![Home Screen Light](./screenshots/Screenshot%202026-03-16%20182728.png)
+![Conversion Screen](./screenshots/Screenshot%202026-03-16%20182751.png)
+
+
 ## Highlights
 
 - Open `DOCX`, `PDF`, and `TXT` files
