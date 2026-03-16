@@ -62,9 +62,28 @@ For UI translation generation (`LINGO_BUILD_MODE=translate`), configure your Lin
 npm install
 ```
 
+### Setup (Windows PowerShell)
+
+```powershell
+npm install
+```
+
 ## Scripts
 
 ```bash
+# Start Electron app in dev mode
+npm run dev
+
+# Build main + preload + renderer (default cache-only localization build)
+npm run build
+
+# Preview built app
+npm run start
+```
+
+### Scripts (Windows PowerShell)
+
+```powershell
 # Start Electron app in dev mode
 npm run dev
 
@@ -91,6 +110,18 @@ npm run build
 
 # Force translation generation and update public/translations/*.json
 LINGO_BUILD_MODE=translate npm run build
+```
+
+Windows PowerShell:
+
+```powershell
+$env:LINGO_BUILD_MODE="translate"; npm run build
+```
+
+Windows Command Prompt (cmd):
+
+```cmd
+set LINGO_BUILD_MODE=translate && npm run build
 ```
 
 ### Important extraction rule
@@ -132,3 +163,10 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
 
 - **Preload bridge missing error**  
   Restart the app and make sure `src/main/preload.ts` is built correctly via `npm run build`.
+
+- **Windows error: EPERM: operation not permitted, mkdir 'D:\\'**  
+  This happens when Windows denies writes to the selected folder (commonly a drive root). Choose a writable output folder such as:
+  - `D:\Users\<your-user>\Documents\PegasusOutput`
+  - `C:\Users\<your-user>\Desktop\PegasusOutput`
+
+  Pegasus now also avoids calling `mkdir` when the selected folder already exists, reducing this issue for root paths.

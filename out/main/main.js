@@ -151,8 +151,30 @@ async function createPgsFile(originalPath, originalType, originalFileBase64, tra
     availableLanguages: ["original", ...Object.keys(translatedData)],
     files
   };
-  await fs.promises.mkdir(outputDir, { recursive: true });
-  const outputPath = path.join(outputDir, `${path.parse(originalPath).name}.pgs`);
+  const normalizedOutputDir = path.resolve(outputDir);
+  try {
+    const existing = await fs.promises.stat(normalizedOutputDir);
+    if (!existing.isDirectory()) {
+      throw new Error("Selected output path is not a directory.");
+    }
+  } catch (error) {
+    const nodeError = error;
+    if (nodeError.code !== "ENOENT") {
+      throw error;
+    }
+    try {
+      await fs.promises.mkdir(normalizedOutputDir, { recursive: true });
+    } catch (mkdirError) {
+      const mkdirNodeError = mkdirError;
+      if (mkdirNodeError.code === "EPERM") {
+        throw new Error(
+          `Output folder is not writable: ${normalizedOutputDir}. Please choose a writable folder such as Documents.`
+        );
+      }
+      throw mkdirError;
+    }
+  }
+  const outputPath = path.join(normalizedOutputDir, `${path.parse(originalPath).name}.pgs`);
   await fs.promises.writeFile(outputPath, JSON.stringify(pgs, null, 2), "utf-8");
   return outputPath;
 }
