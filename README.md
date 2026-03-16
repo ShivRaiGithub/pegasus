@@ -4,9 +4,9 @@ Pegasus is an desktop app for viewing and translating documents into multilingua
 
 ## ScreenShots
 
-![Home Screen Dark](./screenshots/Screenshot%202026-03-16%20182717.png)
-![Home Screen Light](./screenshots/Screenshot%202026-03-16%20182728.png)
-![Conversion Screen](./screenshots/Screenshot%202026-03-16%20182751.png)
+![Home Screen Dark](./screenshots/themeDark.png)
+![Home Screen Light](./screenshots/themeLight.png)
+![Conversion Screen](./screenshots/conversionLanguageSelect.png)
 
 
 ## Highlights
