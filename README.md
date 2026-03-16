@@ -1,6 +1,8 @@
 # Pegasus
 
-Pegasus is an desktop app for viewing and translating documents into multilingual `.pgs` Language Passport files.
+Pegasus is an desktop app for viewing and translating documents into multilingual `.pgs` Language Passport files.   
+
+Made for Lingo.dev Hackathon 3
 
 ## ScreenShots
 
@@ -89,33 +91,5 @@ Windows Command Prompt (cmd):
 ```cmd
 set LINGO_BUILD_MODE=translate && npm run build
 ```
-
-### Important extraction rule
-
-For Lingo Compiler extraction, user-visible text should be written directly in JSX text nodes.
-
-✅ Extractable:
-
-```tsx
-<button>Next →</button>
-<p>No recent files yet</p>
-```
-
-❌ Not reliably extractable:
-
-```tsx
-{someHelper('Next →')}
-{condition ? 'A' : 'B'}
-```
-
-Prefer conditional JSX blocks instead of string ternaries when the text is translatable.
-
-## `.pgs` Format Notes
-
-- Version currently supported: `1.0`
-- Stores:
-  - original file payload (`original`)
-  - translated payloads keyed by locale (`fr`, `es`, etc.)
-  - metadata (`originalType`, `storageFormat`, `createdAt`, `availableLanguages`)
 
 > NOTE: The app was built and tested mostly on WSL (Linux environment). It was tested on windows too up to an extent, but not on iOS.
