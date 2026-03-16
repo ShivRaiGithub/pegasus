@@ -4,6 +4,12 @@ Pegasus is an desktop app for viewing and translating documents into multilingua
 
 Made for Lingo.dev Hackathon 3
 
+## The Problem
+You created a document, shared it with someone. Now you have to translate the document in another language because that person requested it. You are maintaining more than 1 instance of same file, just in different languages. Even a small change can create a load of work to be done. This becomes greater as the number of languages increase.
+
+## The Solution
+A single file containing all the required translations. A single app that manages this all.
+
 ## ScreenShots
 
 ![Home Screen Dark](./screenshots/themeDark.png)
@@ -40,7 +46,7 @@ Made for Lingo.dev Hackathon 3
 - Node.js 20+ (recommended)
 - npm 10+
 
-For UI translation generation (`LINGO_BUILD_MODE=translate`), configure your Lingo compiler API key in environment variables as required by your Lingo.dev setup.
+For UI translation (not needed until you made a change in UI) generation (`LINGO_BUILD_MODE=translate`), configure your Lingo compiler API key in environment variables as required by your Lingo.dev setup.
 
 ## Setup
 ```bash
