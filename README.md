@@ -14,11 +14,9 @@ Pegasus is an Electron desktop app for viewing and translating documents into mu
 ## Tech Stack
 
 - Electron + React + TypeScript
-- `electron-vite` build pipeline
 - Tailwind CSS
 - Lingo.dev Compiler (`@lingo.dev/compiler`)
 - Lingo SDK runtime translation (`@lingo.dev/_sdk`)
-- `docx-preview` (DOCX view), `pdfjs-dist` legacy renderer (PDF view)
 
 ## How Pegasus Works
 
@@ -27,27 +25,6 @@ Pegasus is an Electron desktop app for viewing and translating documents into mu
 3. Selected languages are translated chunk-by-chunk
 4. Content is reconstructed and saved into a `.pgs` package
 5. Renderer displays translated content by selected language
-
-
-## Project Structure
-
-```text
-src/
-  main/
-    main.ts                  # Electron main process + IPC handlers
-    preload.ts               # Secure renderer bridge (window.electronAPI)
-    services/
-      fileExtractor.ts       # Reads DOCX/PDF/TXT into chunks + metadata
-      translator.ts          # Calls Lingo engine for chunk translation
-      fileReconstructor.ts   # Rebuilds translated outputs
-      pgsManager.ts          # Read/write .pgs package files
-  renderer/
-    App.tsx                  # App shell + navigation
-    components/              # Home, Viewer, ConvertFlow, Settings
-    lingo/                   # Compiler cache/metadata artifacts
-public/
-  translations/              # Generated UI locale files
-```
 
 ## Prerequisites
 
@@ -59,12 +36,6 @@ For UI translation generation (`LINGO_BUILD_MODE=translate`), configure your Lin
 ## Setup
 
 ```bash
-npm install
-```
-
-### Setup (Windows PowerShell)
-
-```powershell
 npm install
 ```
 
@@ -81,18 +52,6 @@ npm run build
 npm run start
 ```
 
-### Scripts (Windows PowerShell)
-
-```powershell
-# Start Electron app in dev mode
-npm run dev
-
-# Build main + preload + renderer (default cache-only localization build)
-npm run build
-
-# Preview built app
-npm run start
-```
 
 ## Localization Workflow (Lingo.dev)
 
@@ -164,9 +123,5 @@ Prefer conditional JSX blocks instead of string ternaries when the text is trans
 - **Preload bridge missing error**  
   Restart the app and make sure `src/main/preload.ts` is built correctly via `npm run build`.
 
-- **Windows error: EPERM: operation not permitted, mkdir 'D:\\'**  
-  This happens when Windows denies writes to the selected folder (commonly a drive root). Choose a writable output folder such as:
-  - `D:\Users\<your-user>\Documents\PegasusOutput`
-  - `C:\Users\<your-user>\Desktop\PegasusOutput`
 
-  Pegasus now also avoids calling `mkdir` when the selected folder already exists, reducing this issue for root paths.
+> NOTE: The app was built and tested mostly on WSL (Linux environment). It might have issues on Windows and iOS
