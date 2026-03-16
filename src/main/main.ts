@@ -3,7 +3,7 @@ import path from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain, type OpenDialogOptions } from 'electron';
 import Store from 'electron-store';
 import { extractText, type PageTextMap } from './services/fileExtractor';
-import { reconstructDocx, reconstructTxt } from './services/fileReconstructor';
+import { reconstructTxt } from './services/fileReconstructor';
 import { createPgsFile, readPgsFile } from './services/pgsManager';
 import { translateChunks } from './services/translator';
 
@@ -198,8 +198,10 @@ ipcMain.handle('convert-to-pgs', async (event, options: ConvertOptions) => {
         });
 
         if (originalType === 'docx') {
-          const reconstructedDocx = await reconstructDocx(tmpPathToClean ?? filePath, translatedChunks);
-          translatedData[lang] = reconstructedDocx.toString('base64');
+          translatedData[lang] = JSON.stringify({
+            kind: 'docx-chunks-v1',
+            chunks: translatedChunks,
+          });
         } else if (originalType === 'pdf') {
           const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
           let chunkIndex = 0;

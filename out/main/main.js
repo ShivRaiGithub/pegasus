@@ -3,7 +3,7 @@ import path from "node:path";
 import { ipcMain, dialog, app, BrowserWindow } from "electron";
 import Store from "electron-store";
 import mammoth from "mammoth";
-import { Paragraph, HeadingLevel, TextRun, Document, Packer } from "docx";
+import "docx";
 import { LingoDotDevEngine } from "@lingo.dev/_sdk";
 import __cjs_mod__ from "node:module";
 const __filename = import.meta.filename;
@@ -93,42 +93,6 @@ async function extractText(filePath) {
   if (extension === ".pdf") return extractPdf(filePath);
   if (extension === ".txt") return extractTxt(filePath);
   throw new Error("Unsupported file type. Please select a DOCX, PDF, or TXT file.");
-}
-function isHeadingCandidate(text) {
-  const normalized = text.trim();
-  if (!normalized) {
-    return false;
-  }
-  const isAllCaps = normalized === normalized.toUpperCase() && /[A-Z]/.test(normalized);
-  const isShortLine = normalized.length <= 60;
-  return isAllCaps || isShortLine;
-}
-async function reconstructDocx(originalPath, translatedChunks) {
-  const originalBuffer = await fs.promises.readFile(originalPath);
-  const htmlResult = await mammoth.convertToHtml({ buffer: originalBuffer });
-  const originalLines = htmlResult.value.replace(/<[^>]+>/g, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
-  const paragraphs = translatedChunks.map((chunk, index) => {
-    const sourceLine = originalLines[index] ?? chunk;
-    const useHeading = isHeadingCandidate(sourceLine);
-    if (useHeading) {
-      return new Paragraph({
-        text: chunk,
-        heading: HeadingLevel.HEADING_1
-      });
-    }
-    return new Paragraph({
-      children: [new TextRun({ text: chunk, size: 24 })],
-      spacing: { after: 200 }
-    });
-  });
-  const doc = new Document({
-    sections: [
-      {
-        children: paragraphs.length > 0 ? paragraphs : [new Paragraph({ text: "" })]
-      }
-    ]
-  });
-  return Packer.toBuffer(doc);
 }
 async function reconstructTxt(translatedChunks) {
   const output = translatedChunks.join("\n");
@@ -357,8 +321,10 @@ ipcMain.handle("convert-to-pgs", async (event, options) => {
           total: languages.length
         });
         if (originalType === "docx") {
-          const reconstructedDocx = await reconstructDocx(tmpPathToClean ?? filePath, translatedChunks);
-          translatedData[lang] = reconstructedDocx.toString("base64");
+          translatedData[lang] = JSON.stringify({
+            kind: "docx-chunks-v1",
+            chunks: translatedChunks
+          });
         } else if (originalType === "pdf") {
           const sourcePageTextMap = extractedContent.metadata.structure.pageTextMap ?? [];
           let chunkIndex = 0;

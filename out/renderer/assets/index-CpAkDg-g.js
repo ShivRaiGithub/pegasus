@@ -53048,6 +53048,20 @@ function base64ToArrayBuffer(base64) {
   }
   return bytes.buffer;
 }
+function parseDocxTranslatedChunks(payload) {
+  if (!payload || payload.trim().length === 0) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(payload);
+    if (parsed.kind === "docx-chunks-v1" && Array.isArray(parsed.chunks)) {
+      return parsed.chunks.filter((item) => typeof item === "string");
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 function Viewer({
   openFile,
   selectedLanguage,
@@ -53093,6 +53107,12 @@ function Viewer({
     }
     return openFile.pgsData.files[selectedLanguage] ?? "";
   }, [isPgs, missingSelectedLanguage, openFile.pgsData, selectedLanguage]);
+  const docxTranslatedChunks = reactExports.useMemo(() => {
+    if (fileType !== "docx" || openFile.type !== "pgs" || selectedLanguage === "original") {
+      return null;
+    }
+    return parseDocxTranslatedChunks(selectedPgsPayload);
+  }, [fileType, openFile.type, selectedLanguage, selectedPgsPayload]);
   const regularBase64 = openFile.extractedContent?.fileBase64 ?? "";
   reactExports.useMemo(() => {
     if (fileType !== "docx") {
@@ -53113,13 +53133,8 @@ function Viewer({
     return regularBase64;
   }, [fileType, openFile.pgsData?.files.original, openFile.type, regularBase64]);
   const useDocxOverlayModel = reactExports.useMemo(() => {
-    if (fileType !== "docx" || openFile.type !== "pgs" || selectedLanguage === "original") {
-      return false;
-    }
-    const original = openFile.pgsData?.files.original;
-    const translated = openFile.pgsData?.files[selectedLanguage];
-    return typeof original === "string" && original.length > 0 && typeof translated === "string" && translated.length > 0;
-  }, [fileType, openFile.pgsData?.files, openFile.type, selectedLanguage]);
+    return false;
+  }, []);
   const pdfBase64 = reactExports.useMemo(() => {
     if (fileType !== "pdf") {
       return "";
@@ -53276,6 +53291,44 @@ function Viewer({
       setIsLoading(false);
     }
   };
+  const renderDocxWithTranslatedChunks = async (base64, translatedChunks) => {
+    if (!docxOriginalLayerRef.current) {
+      return;
+    }
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      await renderDocxInto(base64, docxOriginalLayerRef.current);
+      const root = docxOriginalLayerRef.current;
+      const blockNodes = Array.from(root.querySelectorAll("h1, h2, h3, h4, h5, h6, p, li, td, th, blockquote")).filter((node) => (node.textContent?.trim().length ?? 0) > 0);
+      const replaceCount = Math.min(blockNodes.length, translatedChunks.length);
+      for (let index = 0; index < replaceCount; index += 1) {
+        const nextText = translatedChunks[index] ?? "";
+        const textNodes = collectTextNodes(blockNodes[index]);
+        if (textNodes.length === 0) {
+          continue;
+        }
+        const source = textNodes[0].textContent ?? "";
+        const leading = source.match(/^\s*/)?.[0] ?? "";
+        const trailing = source.match(/\s*$/)?.[0] ?? "";
+        textNodes[0].textContent = `${leading}${nextText}${trailing}`;
+        for (let nodeIndex = 1; nodeIndex < textNodes.length; nodeIndex += 1) {
+          textNodes[nodeIndex].textContent = "";
+        }
+      }
+      if (docxOverlayMeasureLayerRef.current) {
+        docxOverlayMeasureLayerRef.current.innerHTML = "";
+      }
+      if (docxTextOverlayLayerRef.current) {
+        docxTextOverlayLayerRef.current.innerHTML = "";
+      }
+    } catch (err) {
+      console.error("docx translated-chunks render failed:", err);
+      setErrorMessage("Failed to render translated document");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const renderDocxOverlay = async (originalBase64, translatedBase64) => {
     if (!docxOriginalLayerRef.current || !docxOverlayMeasureLayerRef.current || !docxTextOverlayLayerRef.current) {
       return;
@@ -53311,12 +53364,23 @@ function Viewer({
     if (openFile.type === "regular" && openFile.extractedContent?.fileBase64) {
       void renderDocx(openFile.extractedContent.fileBase64);
     } else if (openFile.type === "pgs" && openFile.pgsData) {
-      const langBase64 = selectedLanguage === "original" ? openFile.pgsData.files["original"] : openFile.pgsData.files[selectedLanguage];
-      if (langBase64) {
-        void renderDocx(langBase64);
+      if (selectedLanguage === "original") {
+        const originalBase64 = openFile.pgsData.files["original"];
+        if (originalBase64) {
+          void renderDocx(originalBase64);
+        }
+        return;
+      }
+      if (docxTranslatedChunks && originalDocxBase64) {
+        void renderDocxWithTranslatedChunks(originalDocxBase64, docxTranslatedChunks);
+        return;
+      }
+      const legacyTranslatedBase64 = openFile.pgsData.files[selectedLanguage];
+      if (legacyTranslatedBase64) {
+        void renderDocx(legacyTranslatedBase64);
       }
     }
-  }, [fileType, openFile, originalDocxBase64, selectedLanguage, useDocxOverlayModel]);
+  }, [docxTranslatedChunks, fileType, openFile, originalDocxBase64, selectedLanguage, useDocxOverlayModel]);
   reactExports.useEffect(() => {
     if (fileType !== "docx") {
       clearDocxLayers();

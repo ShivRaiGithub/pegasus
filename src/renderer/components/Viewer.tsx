@@ -14,6 +14,11 @@ interface ViewerProps {
   onSelectLanguage: (lang: string) => void;
 }
 
+interface DocxTranslatedChunkPayload {
+  kind: 'docx-chunks-v1';
+  chunks: string[];
+}
+
 const languageNameMap: Record<string, string> = {
   original: 'Original',
   en: 'English',
@@ -52,6 +57,23 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
   }
 
   return bytes.buffer;
+}
+
+function parseDocxTranslatedChunks(payload: string): string[] | null {
+  if (!payload || payload.trim().length === 0) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(payload) as Partial<DocxTranslatedChunkPayload>;
+    if (parsed.kind === 'docx-chunks-v1' && Array.isArray(parsed.chunks)) {
+      return parsed.chunks.filter((item): item is string => typeof item === 'string');
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
 }
 
 function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLanguage }: ViewerProps) {
@@ -94,6 +116,14 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
     return openFile.pgsData.files[selectedLanguage] ?? '';
   }, [isPgs, missingSelectedLanguage, openFile.pgsData, selectedLanguage]);
 
+  const docxTranslatedChunks = useMemo(() => {
+    if (fileType !== 'docx' || openFile.type !== 'pgs' || selectedLanguage === 'original') {
+      return null;
+    }
+
+    return parseDocxTranslatedChunks(selectedPgsPayload);
+  }, [fileType, openFile.type, selectedLanguage, selectedPgsPayload]);
+
   const regularBase64 = openFile.extractedContent?.fileBase64 ?? '';
 
   const docxBase64 = useMemo(() => {
@@ -121,15 +151,8 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
   }, [fileType, openFile.pgsData?.files.original, openFile.type, regularBase64]);
 
   const useDocxOverlayModel = useMemo(() => {
-    if (fileType !== 'docx' || openFile.type !== 'pgs' || selectedLanguage === 'original') {
-      return false;
-    }
-
-    const original = openFile.pgsData?.files.original;
-    const translated = openFile.pgsData?.files[selectedLanguage];
-
-    return typeof original === 'string' && original.length > 0 && typeof translated === 'string' && translated.length > 0;
-  }, [fileType, openFile.pgsData?.files, openFile.type, selectedLanguage]);
+    return false;
+  }, []);
 
   const pdfBase64 = useMemo(() => {
     if (fileType !== 'pdf') {
@@ -322,6 +345,57 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
     }
   };
 
+  const renderDocxWithTranslatedChunks = async (base64: string, translatedChunks: string[]) => {
+    if (!docxOriginalLayerRef.current) {
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      await renderDocxInto(base64, docxOriginalLayerRef.current);
+
+      const root = docxOriginalLayerRef.current;
+      const blockNodes = Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, td, th, blockquote')).filter(
+        (node) => (node.textContent?.trim().length ?? 0) > 0,
+      );
+
+      const replaceCount = Math.min(blockNodes.length, translatedChunks.length);
+
+      for (let index = 0; index < replaceCount; index += 1) {
+        const nextText = translatedChunks[index] ?? '';
+
+        const textNodes = collectTextNodes(blockNodes[index]);
+        if (textNodes.length === 0) {
+          continue;
+        }
+
+        const source = textNodes[0].textContent ?? '';
+        const leading = source.match(/^\s*/)?.[0] ?? '';
+        const trailing = source.match(/\s*$/)?.[0] ?? '';
+        textNodes[0].textContent = `${leading}${nextText}${trailing}`;
+
+        for (let nodeIndex = 1; nodeIndex < textNodes.length; nodeIndex += 1) {
+          textNodes[nodeIndex].textContent = '';
+        }
+      }
+
+      if (docxOverlayMeasureLayerRef.current) {
+        docxOverlayMeasureLayerRef.current.innerHTML = '';
+      }
+
+      if (docxTextOverlayLayerRef.current) {
+        docxTextOverlayLayerRef.current.innerHTML = '';
+      }
+    } catch (err) {
+      console.error('docx translated-chunks render failed:', err);
+      setErrorMessage('Failed to render translated document');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderDocxOverlay = async (originalBase64: string, translatedBase64: string) => {
     if (!docxOriginalLayerRef.current || !docxOverlayMeasureLayerRef.current || !docxTextOverlayLayerRef.current) {
       return;
@@ -365,16 +439,26 @@ function Viewer({ openFile, selectedLanguage, isDark, onConvertToPgs, onSelectLa
     if (openFile.type === 'regular' && openFile.extractedContent?.fileBase64) {
       void renderDocx(openFile.extractedContent.fileBase64);
     } else if (openFile.type === 'pgs' && openFile.pgsData) {
-      const langBase64 =
-        selectedLanguage === 'original'
-          ? openFile.pgsData.files['original']
-          : openFile.pgsData.files[selectedLanguage];
+      if (selectedLanguage === 'original') {
+        const originalBase64 = openFile.pgsData.files['original'];
+        if (originalBase64) {
+          void renderDocx(originalBase64);
+        }
+        return;
+      }
 
-      if (langBase64) {
-        void renderDocx(langBase64);
+      if (docxTranslatedChunks && originalDocxBase64) {
+        void renderDocxWithTranslatedChunks(originalDocxBase64, docxTranslatedChunks);
+        return;
+      }
+
+      const legacyTranslatedBase64 = openFile.pgsData.files[selectedLanguage];
+      if (legacyTranslatedBase64) {
+        void renderDocx(legacyTranslatedBase64);
       }
     }
   }, [
+    docxTranslatedChunks,
     fileType,
     openFile,
     originalDocxBase64,
